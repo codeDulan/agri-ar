@@ -67,7 +67,7 @@
         <a-entity position="-0.35 0 0" rotation="0 0 0"
           gltf-model="#turbine" gltf-fallback="#turbine-fallback"
           scale="0.45 0.45 0.45"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear"></a-entity>
+          spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
 
         <!-- Model B: crop plot (right, flat) -->
         <a-entity id="crop-marker" position="0.45 0 0.1" rotation="0 0 0"
@@ -91,6 +91,7 @@
   </a-scene>
 
   <script src="js/gltf-fallback.js"></script>
+  <script src="js/spin-part.js"></script>
   <script src="js/ar-shell.js"></script>
   <script src="js/marker.js"></script>
 </body>
