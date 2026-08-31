@@ -62,15 +62,15 @@
 
         <a-cylinder position="0 0.02 0" radius="1.1" height="0.04" color="#3b5a44"></a-cylinder>
 
-        <!-- Model A -->
-        <a-entity position="-0.5 0 0"
+        <!-- Model A: wind turbine -->
+        <a-entity position="-0.55 0 0"
           gltf-model="#turbine" gltf-fallback="#turbine-fallback"
-          scale="1 1 1"></a-entity>
+          scale="0.35 0.35 0.35"></a-entity>
 
-        <!-- Model B -->
+        <!-- Model B: crop plot -->
         <a-entity id="crop-marker" position="0.5 0 0"
           gltf-model="#crop" gltf-fallback="#crop-fallback"
-          scale="1 1 1"></a-entity>
+          scale="0.12 0.12 0.12"></a-entity>
 
         <a-sphere position="0 1.5 0" radius="0.04" color="#7CFC00"
           animation="property: material.opacity; from: 1; to: 0.15; dir: alternate; loop: true; dur: 700"></a-sphere>

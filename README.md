@@ -41,7 +41,7 @@ _URL added in Step 8 (GitHub Pages)._
 - [x] Step 1 — project skeleton + running A-Frame scene
 - [x] Step 2 — UI shell + mode switching (3-page architecture, device check)
 - [x] Step 3 — marker-based AR (AR.js, Hiro marker, animated sensor station)
-- [ ] Step 4 — optimised 3D models
+- [x] Step 4 — optimised 3D models (turbine + crop, Draco, 93% size cut on crop)
 - [ ] Step 5 — markerless AR (hit-test)
 - [ ] Step 6 — live Open-Meteo data integration
 - [ ] Step 7 — audio + polish + error handling
@@ -50,4 +50,16 @@ _URL added in Step 8 (GitHub Pages)._
 
 ## Credits / licences
 
-_3D models and their CC licences listed here as they are added._
+| Asset | Author | Source | Licence |
+|-------|--------|--------|---------|
+| `turbine.glb` | Kay Lousberg | poly.pizza/m/79RIeBw3Wk | CC0 1.0 |
+| `crop.glb` | Quaternius | poly.pizza/m/Ro6K0Yg7mx | CC0 1.0 |
+
+### Optimization results (gltf-transform pipeline)
+
+| Model | Raw | Optimized | Reduction |
+|-------|-----|-----------|-----------|
+| turbine | 59.2 KB | 33.1 KB | 44 % |
+| crop | 1.98 MB | 143 KB | 93 % (Draco geometry compression) |
+
+Pipeline: dedup → prune → center → resize(1024) → weld → simplify(0.75) → Draco.
