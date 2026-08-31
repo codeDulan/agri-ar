@@ -40,7 +40,7 @@ _URL added in Step 8 (GitHub Pages)._
 
 - [x] Step 1 — project skeleton + running A-Frame scene
 - [x] Step 2 — UI shell + mode switching (3-page architecture, device check)
-- [ ] Step 3 — marker-based AR
+- [x] Step 3 — marker-based AR (AR.js, Hiro marker, animated sensor station)
 - [ ] Step 4 — optimised 3D models
 - [ ] Step 5 — markerless AR (hit-test)
 - [ ] Step 6 — live Open-Meteo data integration

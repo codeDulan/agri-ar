@@ -112,6 +112,18 @@ html, body {
 .btn:hover { background: #ffffff24; }
 .btn--ghost { background: transparent; }
 
+/* AR.js in embedded mode: force the webcam video + canvas to fill the viewport */
+.a-canvas,
+video.a-video,
+#arjs-video,
+.arjs-video {
+  position: fixed !important;
+  top: 0; left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
 .hint {
   position: absolute;
   left: 50%;
