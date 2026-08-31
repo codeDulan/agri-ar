@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -10,6 +11,7 @@
 
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <div id="ui">
     <header id="topbar">
@@ -20,15 +22,12 @@
 
     <div id="scan-hint" class="hint">
       Point the camera at the <strong>Hiro</strong> marker.
-      <a href="https://raw.githack.com/AR-js-org/AR.js/master/data/images/hiro.png"
-         target="_blank" rel="noopener">Open / print marker ›</a>
+      <a href="https://raw.githack.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" rel="noopener">Open
+        / print marker ›</a>
     </div>
   </div>
 
-  <a-scene
-    embedded
-    vr-mode-ui="enabled: false"
-    loading-screen="enabled: false"
+  <a-scene embedded vr-mode-ui="enabled: false" loading-screen="enabled: false"
     renderer="colorManagement: true; antialias: true; alpha: true"
     gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
     arjs="sourceType: webcam; detectionMode: mono; matrixCodeType: 3x3; debugUIEnabled: false;">
@@ -46,8 +45,7 @@
     <!-- ===== primitive fallbacks (hidden; cloned in only if a .glb fails) ===== -->
     <a-entity id="turbine-fallback" visible="false">
       <a-cylinder radius="0.04" height="1.6" position="0 0.8 0" color="#dfe6e1"></a-cylinder>
-      <a-cone radius-bottom="0.12" radius-top="0" height="0.3" position="0 1.7 0" color="#9aa7a0"
-        rotation="0 0 0"
+      <a-cone radius-bottom="0.12" radius-top="0" height="0.3" position="0 1.7 0" color="#9aa7a0" rotation="0 0 0"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 3000; easing: linear"></a-cone>
     </a-entity>
     <a-entity id="crop-fallback" visible="false">
@@ -61,21 +59,17 @@
 
         <!-- shared ground: one flat rectangular field under both models -->
         <a-plane position="0.05 0.004 0" rotation="-90 0 0" width="1.9" height="1.4"
-          material="color: #5cae4e; opacity: 0.28; transparent: true; side: double"></a-plane>
-        <a-entity position="0.05 0.006 0" rotation="-90 0 0"
-          geometry="primitive: plane; width: 1.9; height: 1.4"
-          material="color: #3f7d34; opacity: 0.55; transparent: true; wireframe: true"></a-entity>
+          material="color: #5cae4e; side: double"></a-plane>
+        <a-entity position="0.05 0.006 0" rotation="-90 0 0" geometry="primitive: plane; width: 1.9; height: 1.4"
+          material="color: #3f7d34; wireframe: true"></a-entity>
 
         <!-- Model A: wind turbine (hero, centre-left) -->
-        <a-entity position="-0.35 0 0" rotation="0 0 0"
-          gltf-model="#turbine" gltf-fallback="#turbine-fallback"
-          scale="0.45 0.45 0.45"
-          spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
+        <a-entity position="-0.35 0 0" rotation="0 0 0" gltf-model="#turbine" gltf-fallback="#turbine-fallback"
+          scale="0.45 0.45 0.45" spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
 
         <!-- Model B: crop plot (right, flat) -->
-        <a-entity id="crop-marker" position="0.45 0 0.1" rotation="0 0 0"
-          gltf-model="#crop" gltf-fallback="#crop-fallback"
-          scale="0.6 0.6 0.6"></a-entity>
+        <a-entity id="crop-marker" position="0.45 0 0.1" rotation="0 0 0" gltf-model="#crop"
+          gltf-fallback="#crop-fallback" scale="0.6 0.6 0.6"></a-entity>
 
         <!-- blinking status LED -->
         <a-sphere position="-0.35 1.0 0" radius="0.03" color="#7CFC00"
@@ -98,4 +92,5 @@
   <script src="js/ar-shell.js"></script>
   <script src="js/marker.js"></script>
 </body>
+
 </html>
