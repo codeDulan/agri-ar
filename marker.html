@@ -59,11 +59,12 @@
 
       <a-entity id="station" position="0 0 0">
 
-        <!-- shared ground: one flat field under both models -->
-        <a-circle position="0.05 0.004 0" rotation="-90 0 0" radius="0.95"
-          material="color: #5cae4e; opacity: 0.28; transparent: true; side: double"></a-circle>
-        <a-ring position="0.05 0.006 0" rotation="-90 0 0" radius-inner="0.92" radius-outer="0.95"
-          material="color: #3f7d34; opacity: 0.5; transparent: true"></a-ring>
+        <!-- shared ground: one flat rectangular field under both models -->
+        <a-plane position="0.05 0.004 0" rotation="-90 0 0" width="1.9" height="1.4"
+          material="color: #5cae4e; opacity: 0.28; transparent: true; side: double"></a-plane>
+        <a-entity position="0.05 0.006 0" rotation="-90 0 0"
+          geometry="primitive: plane; width: 1.9; height: 1.4"
+          material="color: #3f7d34; opacity: 0.55; transparent: true; wireframe: true"></a-entity>
 
         <!-- Model A: wind turbine (hero, centre-left) -->
         <a-entity position="-0.35 0 0" rotation="0 0 0"
