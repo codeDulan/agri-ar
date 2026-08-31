@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>AgriAR — Marker AR</title>
 
-  <!-- A-Frame first, then the AR.js build that plugs into it -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@ar-js-org/ar.js@3.4.7/aframe/build/aframe-ar.js"></script>
 
@@ -26,40 +25,57 @@
     </div>
   </div>
 
-  <!-- embedded = render into the page rather than take over the whole document.
-       AR.js still overlays the webcam video full-screen behind the canvas. -->
   <a-scene
     embedded
     vr-mode-ui="enabled: false"
+    loading-screen="enabled: false"
     renderer="colorManagement: true; antialias: true; alpha: true"
+    gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
     arjs="sourceType: webcam; detectionMode: mono; matrixCodeType: 3x3; debugUIEnabled: false;">
 
-    <!-- Lighting travels with the scene, not the marker -->
+    <a-assets timeout="15000">
+      <!-- Model A: wind turbine (also used, and animated by live wind, in markerless mode) -->
+      <a-asset-item id="turbine" src="assets/models/turbine.glb"></a-asset-item>
+      <!-- Model B: crop / plant cluster (colour driven by live air quality) -->
+      <a-asset-item id="crop" src="assets/models/crop.glb"></a-asset-item>
+    </a-assets>
+
     <a-entity light="type: ambient; intensity: 0.7"></a-entity>
     <a-entity light="type: directional; intensity: 0.85; castShadow: true" position="1 3 2"></a-entity>
 
-    <!-- Everything inside <a-marker> only renders while the marker is visible -->
+    <!-- ===== primitive fallbacks (hidden; cloned in only if a .glb fails) ===== -->
+    <a-entity id="turbine-fallback" visible="false">
+      <a-cylinder radius="0.04" height="1.6" position="0 0.8 0" color="#dfe6e1"></a-cylinder>
+      <a-cone radius-bottom="0.12" radius-top="0" height="0.3" position="0 1.7 0" color="#9aa7a0"
+        rotation="0 0 0"
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 3000; easing: linear"></a-cone>
+    </a-entity>
+    <a-entity id="crop-fallback" visible="false">
+      <a-sphere radius="0.18" position="0 0.3 0" color="#3f9b45"></a-sphere>
+      <a-cylinder radius="0.03" height="0.3" position="0 0.15 0" color="#6b4f2a"></a-cylinder>
+    </a-entity>
+
     <a-marker id="hiro" preset="hiro" smooth="true" smoothCount="8" smoothTolerance="0.01">
 
-      <!-- Placeholder "sensor station" built from primitives.
-           Step 4 swaps this group for an optimised .glb model. -->
-      <a-entity id="station" position="0 0 0" scale="0.6 0.6 0.6"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear">
+      <a-entity id="station" position="0 0 0" scale="0.5 0.5 0.5"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 16000; easing: linear">
 
-        <!-- ground pad -->
-        <a-cylinder position="0 0.02 0" radius="0.9" height="0.04" color="#3b5a44"></a-cylinder>
-        <!-- mast -->
-        <a-box position="0 0.7 0" depth="0.06" width="0.06" height="1.4" color="#9aa7a0"></a-box>
-        <!-- sensor head -->
-        <a-box position="0 1.45 0" depth="0.28" width="0.28" height="0.2" color="#2f6b3f"></a-box>
-        <!-- solar panel -->
-        <a-box position="0 1.05 0.28" rotation="35 0 0" depth="0.02" width="0.5" height="0.34" color="#1b3a63"></a-box>
-        <!-- blinking status LED -->
-        <a-sphere position="0.1 1.5 0.12" radius="0.03" color="#7CFC00"
+        <a-cylinder position="0 0.02 0" radius="1.1" height="0.04" color="#3b5a44"></a-cylinder>
+
+        <!-- Model A -->
+        <a-entity position="-0.5 0 0"
+          gltf-model="#turbine" gltf-fallback="#turbine-fallback"
+          scale="1 1 1"></a-entity>
+
+        <!-- Model B -->
+        <a-entity id="crop-marker" position="0.5 0 0"
+          gltf-model="#crop" gltf-fallback="#crop-fallback"
+          scale="1 1 1"></a-entity>
+
+        <a-sphere position="0 1.5 0" radius="0.04" color="#7CFC00"
           animation="property: material.opacity; from: 1; to: 0.15; dir: alternate; loop: true; dur: 700"></a-sphere>
       </a-entity>
 
-      <!-- Floating label above the station -->
       <a-entity position="0 1.9 0" rotation="-90 0 0"
         text="value: Field Sensor 01; align: center; width: 3; color: #eafaf0"></a-entity>
     </a-marker>
@@ -67,6 +83,7 @@
     <a-entity camera></a-entity>
   </a-scene>
 
+  <script src="js/gltf-fallback.js"></script>
   <script src="js/ar-shell.js"></script>
   <script src="js/marker.js"></script>
 </body>
