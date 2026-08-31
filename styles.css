@@ -112,16 +112,26 @@ html, body {
 .btn:hover { background: #ffffff24; }
 .btn--ghost { background: transparent; }
 
-/* AR.js in embedded mode: force the webcam video + canvas to fill the viewport */
+/* AR.js in embedded mode: force the webcam video + canvas to fill the viewport.
+   AR.js sizes the <video> to the camera's native resolution (landscape), which
+   letterboxes on a portrait phone unless we override it here. */
 .a-canvas,
-video.a-video,
+video,
 #arjs-video,
-.arjs-video {
+.arjs-video,
+video#arjs-video {
   position: fixed !important;
-  top: 0; left: 0;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  object-fit: cover !important;
+  transform: none !important;
+  margin: 0 !important;
 }
 
 .hint {
