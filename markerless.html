@@ -60,12 +60,11 @@
     <!-- ===== the farm scene: hidden until the user taps a detected surface ===== -->
     <a-entity id="farm" visible="false" scale="0.16 0.16 0.16">
 
-      <!-- shared ground field -->
-      <a-plane position="0.3 0.004 0" rotation="-90 0 0" width="2.6" height="1.8"
-        material="color: #5cae4e; side: double"></a-plane>
-      <a-entity position="0.3 0.006 0" rotation="-90 0 0"
-        geometry="primitive: plane; width: 2.6; height: 1.8"
-        material="color: #3f7d34; wireframe: true"></a-entity>
+      <!-- shared ground field: solid, sunk just below the models -->
+      <a-box position="0.3 -0.03 0" depth="1.8" width="2.6" height="0.06"
+        material="color: #5cae4e; roughness: 1"></a-box>
+      <a-box position="0.3 -0.062 0" depth="1.9" width="2.7" height="0.02"
+        material="color: #2f5d29; roughness: 1"></a-box>
 
       <!-- Model A: wind turbine — blades + yaw driven by live wind -->
       <a-entity id="turbine-ent" position="-0.55 0 0"
@@ -77,7 +76,7 @@
       <a-entity weather-fx="turbine: #turbine-ent; panel: #ml-readout; panelRoot: #ml-panel"></a-entity>
 
       <!-- Model B: crop plot — colour driven by live air quality (Step 6) -->
-      <a-entity id="crop-markerless" position="0.7 0 0.1"
+      <a-entity id="crop-markerless" position="0.7 0.005 0.1"
         gltf-model="#crop" gltf-fallback="#crop-fallback"
         scale="0.7 0.7 0.7"></a-entity>
 

@@ -67,11 +67,11 @@
 
       <a-entity id="station" position="0 0 0">
 
-        <!-- shared ground: one flat rectangular field under both models -->
-        <a-plane position="0.05 0.004 0" rotation="-90 0 0" width="1.9" height="1.4"
-          material="color: #5cae4e; opacity: 0.55; transparent: true; side: double"></a-plane>
-        <a-entity position="0.05 0.006 0" rotation="-90 0 0" geometry="primitive: plane; width: 1.9; height: 1.4"
-          material="color: #3f7d34; opacity: 0.55; transparent: true; wireframe: true"></a-entity>
+        <!-- shared ground: one solid rectangular field, sunk just below the models -->
+        <a-box position="0.05 -0.03 0" depth="1.4" width="1.9" height="0.06"
+          material="color: #5cae4e; roughness: 1"></a-box>
+        <a-box position="0.05 -0.062 0" depth="1.5" width="2.0" height="0.02"
+          material="color: #2f5d29; roughness: 1"></a-box>
 
         <!-- Model A: wind turbine (hero, centre-left) -->
         <a-entity id="turbine-ent" position="-0.35 0 0" rotation="0 0 0"
@@ -82,7 +82,7 @@
         <a-entity weather-fx="turbine: #turbine-ent; panel: #marker-readout; panelRoot: #marker-panel"></a-entity>
 
         <!-- Model B: crop plot (right, flat) -->
-        <a-entity id="crop-marker" position="0.45 0 0.1" rotation="0 0 0" gltf-model="#crop"
+        <a-entity id="crop-marker" position="0.45 0.005 0.1" rotation="0 0 0" gltf-model="#crop"
           gltf-fallback="#crop-fallback" scale="0.6 0.6 0.6"></a-entity>
 
         <!-- blinking status LED -->
