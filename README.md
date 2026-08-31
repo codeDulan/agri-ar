@@ -34,7 +34,9 @@ or a tunnel such as `npx localtunnel --port 8080`.
 
 ## Hosted application
 
-_URL added in Step 8 (GitHub Pages)._
+**https://codedulan.github.io/agri-ar/**
+
+Repo: https://github.com/codeDulan/agri-ar
 
 ## Build progress
 
