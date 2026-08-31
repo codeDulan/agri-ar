@@ -39,7 +39,7 @@ _URL added in Step 8 (GitHub Pages)._
 ## Build progress
 
 - [x] Step 1 — project skeleton + running A-Frame scene
-- [ ] Step 2 — UI shell + mode switching
+- [x] Step 2 — UI shell + mode switching (3-page architecture, device check)
 - [ ] Step 3 — marker-based AR
 - [ ] Step 4 — optimised 3D models
 - [ ] Step 5 — markerless AR (hit-test)

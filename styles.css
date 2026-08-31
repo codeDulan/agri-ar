@@ -6,41 +6,120 @@ html, body {
   height: 100%;
   overflow: hidden;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #eafaf0;
 }
 
-/* The UI overlay must not block clicks meant for the 3D canvas,
-   except on its own interactive children. */
+/* ===================================================================
+   Landing menu (index.html)
+   =================================================================== */
+.menu-page {
+  overflow: auto;
+  background: radial-gradient(circle at 30% 20%, #1c3326, #0b1410 70%);
+}
+
+.menu {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px 32px;
+  text-align: center;
+}
+
+.menu__title { font-size: 40px; margin: 0 0 8px; }
+.menu__tagline { opacity: 0.8; line-height: 1.5; margin: 0 0 32px; }
+
+.menu__cards {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 560px) {
+  .menu__cards { grid-template-columns: 1fr 1fr; }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 18px;
+  border-radius: 16px;
+  background: #ffffff0f;
+  border: 1px solid #ffffff1f;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.card:hover { transform: translateY(-3px); background: #ffffff1a; }
+.card__icon { font-size: 34px; }
+.card__label { font-weight: 700; font-size: 18px; }
+.card__desc { font-size: 13px; opacity: 0.75; line-height: 1.45; }
+
+.device-check {
+  margin-top: 28px;
+  font-size: 13px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #ffffff0d;
+  line-height: 1.5;
+}
+.device-check--ok { color: #8ef0b0; }
+.device-check--warn { color: #ffd27a; }
+
+.menu__footer { margin-top: 32px; font-size: 12px; opacity: 0.5; }
+
+/* ===================================================================
+   AR mode pages (marker.html / markerless.html)
+   =================================================================== */
 #ui {
   position: fixed;
   inset: 0;
   z-index: 10;
   pointer-events: none;
 }
-
 #ui button,
-#ui .panel {
-  pointer-events: auto;
-}
+#ui .panel { pointer-events: auto; }
 
 #topbar {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
+  gap: 10px;
+  padding: 10px 12px;
   background: linear-gradient(#000c, #0000);
-  color: #eafaf0;
 }
-
-.logo { font-weight: 700; font-size: 16px; }
+#topbar .logo { font-weight: 700; font-size: 15px; flex: 1; }
 
 #status {
   font-size: 12px;
-  opacity: 0.8;
+  opacity: 0.85;
   background: #ffffff1a;
   padding: 4px 8px;
   border-radius: 999px;
+  white-space: nowrap;
+}
+
+.btn {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid #ffffff33;
+  background: #ffffff14;
+  color: #eafaf0;
+  cursor: pointer;
+}
+.btn:hover { background: #ffffff24; }
+.btn--ghost { background: transparent; }
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  font-size: 12px;
+  background: #000000a6;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-align: center;
 }
