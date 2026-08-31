@@ -25,6 +25,10 @@
       <a href="https://raw.githack.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" rel="noopener">Open
         / print marker ›</a>
     </div>
+
+    <div class="controls" style="bottom: 76px;">
+      <button id="refresh" class="btn">↻ Refresh weather</button>
+    </div>
   </div>
 
   <a-scene embedded loading-screen="enabled: false"
@@ -65,8 +69,12 @@
           material="color: #3f7d34; opacity: 0.55; transparent: true; wireframe: true"></a-entity>
 
         <!-- Model A: wind turbine (hero, centre-left) -->
-        <a-entity position="-0.35 0 0" rotation="0 0 0" gltf-model="#turbine" gltf-fallback="#turbine-fallback"
+        <a-entity id="turbine-ent" position="-0.35 0 0" rotation="0 0 0"
+          gltf-model="#turbine" gltf-fallback="#turbine-fallback"
           scale="0.45 0.45 0.45" spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
+
+        <!-- live weather visuals: sun / clouds+rain + turbine wind response -->
+        <a-entity weather-fx="turbine: #turbine-ent; panel: #marker-readout; panelRoot: #marker-panel"></a-entity>
 
         <!-- Model B: crop plot (right, flat) -->
         <a-entity id="crop-marker" position="0.45 0 0.1" rotation="0 0 0" gltf-model="#crop"
@@ -78,10 +86,10 @@
       </a-entity>
 
       <!-- data panel (hidden until Step 6 wires live values in) -->
-      <a-entity id="marker-panel" visible="false" position="0 1.35 0" rotation="-90 0 0">
-        <a-plane width="1.4" height="0.4" material="color: #0c1a12; opacity: 0.75; transparent: true"></a-plane>
+      <a-entity id="marker-panel" visible="false" position="0 1.55 0" rotation="-90 0 0">
+        <a-plane width="1.7" height="0.62" material="color: #0c1a12; opacity: 0.78; transparent: true"></a-plane>
         <a-entity id="marker-readout" position="0 0 0.01"
-          text="value: ; align: center; width: 1.9; color: #eafaf0"></a-entity>
+          text="value: ; align: center; width: 2.1; color: #eafaf0; wrapCount: 30"></a-entity>
       </a-entity>
     </a-marker>
 
@@ -90,7 +98,9 @@
 
   <script src="js/gltf-fallback.js"></script>
   <script src="js/spin-part.js"></script>
+  <script src="js/weather-fx.js"></script>
   <script src="js/ar-shell.js"></script>
+  <script src="js/weather.js"></script>
   <script src="js/marker.js"></script>
 </body>
 

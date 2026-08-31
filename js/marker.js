@@ -14,6 +14,17 @@ marker.addEventListener('markerLost', () => {
   scanHint.style.display = '';
 });
 
+// Manual weather refresh
+document.querySelector('#refresh')?.addEventListener('click', () => {
+  window.setStatus('Refreshing weather…');
+  window.AgriWeather?.refresh?.();
+});
+
+document.addEventListener('weather-updated', (e) => {
+  window.setStatus(`${e.detail.condition} · wind ${e.detail.windSpeed} m/s`);
+});
+document.addEventListener('weather-error', () => window.setStatus('⚠️ weather fetch failed'));
+
 // AR.js requests the camera as soon as the scene initialises. If the user
 // blocks it (or there is no camera) getUserMedia rejects — tell them why.
 window.addEventListener('load', () => {

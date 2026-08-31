@@ -47,6 +47,14 @@ scene.addEventListener('ar-hit-test-select', () => {
 });
 
 // --- re-place button --------------------------------------------------
+document.querySelector('#refresh')?.addEventListener('click', () => {
+  window.setStatus('Refreshing weather…');
+  window.AgriWeather?.refresh?.();
+});
+document.addEventListener('weather-updated', (e) => {
+  if (placed) window.setStatus(`${e.detail.condition} · wind ${e.detail.windSpeed} m/s`);
+});
+
 resetBtn.addEventListener('click', () => {
   placed = false;
   farm.setAttribute('visible', false);
