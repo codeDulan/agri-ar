@@ -44,7 +44,8 @@ Repo: https://github.com/codeDulan/agri-ar
 - [x] Step 2 — UI shell + mode switching (3-page architecture, device check)
 - [x] Step 3 — marker-based AR (AR.js, Hiro marker, animated sensor station)
 - [x] Step 4 — optimised 3D models (turbine + crop, Draco, 93% size cut on crop)
-- [~] Step 5 — markerless AR (WebXR hit-test, tap-to-place) — needs on-device test
+- [x] Step 5 — markerless AR (WebXR hit-test, tap-to-place)
+- [x] Deploy — GitHub Pages live at https://codedulan.github.io/agri-ar/
 - [ ] Step 6 — live Open-Meteo data integration
 - [ ] Step 7 — audio + polish + error handling
 - [ ] Step 8 — cross-device testing + deploy
