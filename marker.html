@@ -57,27 +57,34 @@
 
     <a-marker id="hiro" preset="hiro" smooth="true" smoothCount="8" smoothTolerance="0.01">
 
-      <a-entity id="station" position="0 0 0" scale="0.5 0.5 0.5"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 16000; easing: linear">
+      <a-entity id="station" position="0 0 0">
 
-        <a-cylinder position="0 0.02 0" radius="1.1" height="0.04" color="#3b5a44"></a-cylinder>
+        <!-- thin, semi-transparent ground pad -->
+        <a-cylinder position="0 0.005 0" radius="0.7" height="0.01"
+          material="color: #4b7a58; opacity: 0.35; transparent: true"></a-cylinder>
 
-        <!-- Model A: wind turbine -->
-        <a-entity position="-0.55 0 0"
+        <!-- Model A: wind turbine (hero, centre-left), slow spin -->
+        <a-entity position="-0.35 0 0" rotation="0 0 0"
           gltf-model="#turbine" gltf-fallback="#turbine-fallback"
-          scale="0.35 0.35 0.35"></a-entity>
+          scale="0.45 0.45 0.45"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear"></a-entity>
 
-        <!-- Model B: crop plot -->
-        <a-entity id="crop-marker" position="0.5 0 0"
+        <!-- Model B: crop plot (right, flat) -->
+        <a-entity id="crop-marker" position="0.45 0 0.1" rotation="0 0 0"
           gltf-model="#crop" gltf-fallback="#crop-fallback"
-          scale="0.12 0.12 0.12"></a-entity>
+          scale="0.6 0.6 0.6"></a-entity>
 
-        <a-sphere position="0 1.5 0" radius="0.04" color="#7CFC00"
+        <!-- blinking status LED -->
+        <a-sphere position="-0.35 1.0 0" radius="0.03" color="#7CFC00"
           animation="property: material.opacity; from: 1; to: 0.15; dir: alternate; loop: true; dur: 700"></a-sphere>
       </a-entity>
 
-      <a-entity position="0 1.9 0" rotation="-90 0 0"
-        text="value: Field Sensor 01; align: center; width: 3; color: #eafaf0"></a-entity>
+      <!-- data panel (hidden until Step 6 wires live values in) -->
+      <a-entity id="marker-panel" visible="false" position="0 1.35 0" rotation="-90 0 0">
+        <a-plane width="1.4" height="0.4" material="color: #0c1a12; opacity: 0.75; transparent: true"></a-plane>
+        <a-entity id="marker-readout" position="0 0 0.01"
+          text="value: ; align: center; width: 1.9; color: #eafaf0"></a-entity>
+      </a-entity>
     </a-marker>
 
     <a-entity camera></a-entity>
