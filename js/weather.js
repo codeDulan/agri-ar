@@ -52,6 +52,14 @@
       time: new Date(c.time)
     };
 
+    // Demo override: ?condition=rain|clear|cloudy  and/or  ?wind=8
+    const q = new URLSearchParams(location.search);
+    if (q.has('condition')) data.condition = q.get('condition');
+    if (q.has('wind')) {
+      data.windSpeed = +q.get('wind');
+      data.windCompass = compass(data.windDir);
+    }
+
     window.AgriWeather = { ...(window.AgriWeather || {}), data };
     document.dispatchEvent(new CustomEvent('weather-updated', { detail: data }));
     console.log('[AgriAR] weather', data);
