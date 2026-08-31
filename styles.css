@@ -155,3 +155,24 @@ video#arjs-video {
   display: flex;
   gap: 10px;
 }
+
+.searchbar {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  width: min(92vw, 420px);
+}
+.searchbar input {
+  flex: 1;
+  font: inherit;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #ffffff33;
+  background: #0d1712d9;
+  color: #eafaf0;
+}
+.searchbar input::placeholder { color: #eafaf099; }
