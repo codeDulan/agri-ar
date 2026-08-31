@@ -4,28 +4,91 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>AgriAR — Markerless AR</title>
+
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- This #ui element is handed to WebXR as the dom-overlay, so it stays
+       visible on top of the camera feed during the AR session. -->
   <div id="ui">
     <header id="topbar">
       <button id="back" class="btn btn--ghost">‹ Menu</button>
       <span class="logo">📡 Markerless AR</span>
       <span id="status">loading…</span>
     </header>
-    <div class="hint">Step 5 will add WebXR hit-testing (tap a surface to place) here.</div>
+
+    <div id="hint" class="hint">Press <strong>Enter AR</strong>, then move your phone to scan the floor.</div>
+
+    <div id="controls" class="controls" hidden>
+      <button id="reset" class="btn">Re-place</button>
+    </div>
   </div>
 
-  <a-scene background="color: #101915" renderer="colorManagement: true">
-    <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-    <a-entity light="type: directional; intensity: 0.9" position="1 3 2"></a-entity>
-    <a-box position="0 1.2 -3" rotation="0 45 0" color="#4caf50"
-      animation="property: rotation; to: 0 405 0; loop: true; dur: 6000; easing: linear"></a-box>
-    <a-plane position="0 0 -3" rotation="-90 0 0" width="6" height="6" color="#1e2b22"></a-plane>
-    <a-entity camera position="0 1.6 0" look-controls wasd-controls></a-entity>
+  <a-scene
+    renderer="colorManagement: true; antialias: true"
+    loading-screen="enabled: false"
+    gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
+    webxr="requiredFeatures: hit-test,local-floor; optionalFeatures: dom-overlay; overlayElement: #ui"
+    ar-hit-test="target: #farm; type: map; mapSize: 0.3 0.3"
+    xr-mode-ui="XRMode: ar">
+
+    <a-assets timeout="15000">
+      <a-asset-item id="turbine" src="assets/models/turbine.glb"></a-asset-item>
+      <a-asset-item id="crop" src="assets/models/crop.glb"></a-asset-item>
+    </a-assets>
+
+    <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+    <a-entity light="type: directional; intensity: 0.9; castShadow: true" position="1 4 2"></a-entity>
+
+    <!-- primitive fallbacks (cloned in if a .glb fails) -->
+    <a-entity id="turbine-fallback" visible="false">
+      <a-cylinder radius="0.04" height="1.6" position="0 0.8 0" color="#dfe6e1"></a-cylinder>
+      <a-cone radius-bottom="0.12" radius-top="0" height="0.3" position="0 1.7 0" color="#9aa7a0"></a-cone>
+    </a-entity>
+    <a-entity id="crop-fallback" visible="false">
+      <a-sphere radius="0.18" position="0 0.3 0" color="#3f9b45"></a-sphere>
+    </a-entity>
+
+    <!-- ===== the farm scene: hidden until the user taps a detected surface ===== -->
+    <a-entity id="farm" visible="false" scale="0.16 0.16 0.16">
+
+      <!-- shared ground field -->
+      <a-plane position="0.3 0.004 0" rotation="-90 0 0" width="2.6" height="1.8"
+        material="color: #5cae4e; side: double"></a-plane>
+      <a-entity position="0.3 0.006 0" rotation="-90 0 0"
+        geometry="primitive: plane; width: 2.6; height: 1.8"
+        material="color: #3f7d34; wireframe: true"></a-entity>
+
+      <!-- Model A: wind turbine — blades driven by live wind (Step 6) -->
+      <a-entity position="-0.55 0 0"
+        gltf-model="#turbine" gltf-fallback="#turbine-fallback"
+        scale="0.55 0.55 0.55"
+        spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
+
+      <!-- Model B: crop plot — colour driven by live air quality (Step 6) -->
+      <a-entity id="crop-markerless" position="0.7 0 0.1"
+        gltf-model="#crop" gltf-fallback="#crop-fallback"
+        scale="0.7 0.7 0.7"></a-entity>
+
+      <a-sphere position="-0.55 1.1 0" radius="0.04" color="#7CFC00"
+        animation="property: material.opacity; from: 1; to: 0.15; dir: alternate; loop: true; dur: 700"></a-sphere>
+
+      <!-- live-data panel (hidden until Step 6) -->
+      <a-entity id="ml-panel" visible="false" position="0.1 1.5 0">
+        <a-plane width="1.8" height="0.5" material="color: #0c1a12; opacity: 0.8; transparent: true"></a-plane>
+        <a-entity id="ml-readout" position="0 0 0.01"
+          text="value: ; align: center; width: 2.4; color: #eafaf0"></a-entity>
+      </a-entity>
+    </a-entity>
+
+    <a-camera></a-camera>
   </a-scene>
 
+  <script src="js/gltf-fallback.js"></script>
+  <script src="js/spin-part.js"></script>
   <script src="js/ar-shell.js"></script>
+  <script src="js/markerless.js"></script>
 </body>
 </html>

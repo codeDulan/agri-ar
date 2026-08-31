@@ -42,7 +42,7 @@ _URL added in Step 8 (GitHub Pages)._
 - [x] Step 2 — UI shell + mode switching (3-page architecture, device check)
 - [x] Step 3 — marker-based AR (AR.js, Hiro marker, animated sensor station)
 - [x] Step 4 — optimised 3D models (turbine + crop, Draco, 93% size cut on crop)
-- [x] Step 5 — markerless AR (WebXR hit-test, tap-to-place)
+- [~] Step 5 — markerless AR (WebXR hit-test, tap-to-place) — needs on-device test
 - [ ] Step 6 — live Open-Meteo data integration
 - [ ] Step 7 — audio + polish + error handling
 - [ ] Step 8 — cross-device testing + deploy

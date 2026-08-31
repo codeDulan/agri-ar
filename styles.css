@@ -129,9 +129,19 @@ video.a-video,
   left: 50%;
   bottom: 26px;
   transform: translateX(-50%);
+  max-width: 88vw;
   font-size: 12px;
   background: #000000a6;
   padding: 8px 14px;
   border-radius: 999px;
   text-align: center;
+}
+
+.controls {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
 }
