@@ -59,9 +59,9 @@
 
         <!-- shared ground: one flat rectangular field under both models -->
         <a-plane position="0.05 0.004 0" rotation="-90 0 0" width="1.9" height="1.4"
-          material="color: #5cae4e; side: double"></a-plane>
+          material="color: #5cae4e; opacity: 0.55; transparent: true; side: double"></a-plane>
         <a-entity position="0.05 0.006 0" rotation="-90 0 0" geometry="primitive: plane; width: 1.9; height: 1.4"
-          material="color: #3f7d34; wireframe: true"></a-entity>
+          material="color: #3f7d34; opacity: 0.55; transparent: true; wireframe: true"></a-entity>
 
         <!-- Model A: wind turbine (hero, centre-left) -->
         <a-entity position="-0.35 0 0" rotation="0 0 0" gltf-model="#turbine" gltf-fallback="#turbine-fallback"
