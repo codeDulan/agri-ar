@@ -13,6 +13,7 @@
 AFRAME.registerComponent('weather-fx', {
   schema: {
     turbine:   { type: 'selector' },
+    crop:      { type: 'selector' },
     panel:     { type: 'selector' },
     panelRoot: { type: 'selector' },
     rainCount: { type: 'int', default: 140 }
@@ -30,6 +31,23 @@ AFRAME.registerComponent('weather-fx', {
     this.el.setObject3D('rain', this.rain.mesh);
 
     this._apply('clear');
+
+    // cache the crop model's original material colours so we can tint & restore
+    this._cropMats = [];
+    if (this.data.crop) {
+      this.data.crop.addEventListener('model-loaded', () => {
+        const mesh = this.data.crop.getObject3D('mesh');
+        if (!mesh) return;
+        mesh.traverse((o) => {
+          if (o.isMesh) {
+            (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => {
+              if (m && m.color) this._cropMats.push({ mat: m, base: m.color.clone() });
+            });
+          }
+        });
+        if (this._lastCondition) this._tintCrop(this._lastCondition);
+      });
+    }
 
     this._hasData = false;
     this._onWeather = (e) => { this._hasData = true; this._handle(e.detail); };
@@ -67,7 +85,25 @@ AFRAME.registerComponent('weather-fx', {
     }
 
     this._apply(d.condition);
+    this._tintCrop(d.condition);
     this._updatePanel(d);
+  },
+
+  // Sunny -> dry/brown, Rainy -> lush green, Cloudy/windy -> natural (original)
+  _tintCrop(condition) {
+    this._lastCondition = condition;
+    if (!this._cropMats.length) return;
+    const cfg = {
+      clear:  { hex: 0xc9a24e, s: 0.6 },
+      rain:   { hex: 0x2aa33a, s: 0.55 },
+      cloudy: { hex: 0x000000, s: 0 }
+    }[condition] || { hex: 0x000000, s: 0 };
+    const target = new THREE.Color(cfg.hex);
+    this._cropMats.forEach(({ mat, base }) => {
+      mat.color.copy(base);
+      if (cfg.s > 0) mat.color.lerp(target, cfg.s);
+      mat.needsUpdate = true;
+    });
   },
 
   _apply(condition) {

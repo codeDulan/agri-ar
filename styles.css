@@ -114,6 +114,16 @@ html, body {
 
 #sound { padding: 6px 9px; font-size: 15px; line-height: 1; }
 
+.btn.is-active {
+  background: #5cae4e;
+  border-color: #7ede6c;
+  color: #0c130f;
+  font-weight: 700;
+}
+
+/* marker page: lift the scan hint above the scenario bar */
+#scan-hint { bottom: 84px; }
+
 /* AR.js in embedded mode: force the webcam video + canvas to fill the viewport.
    AR.js sizes the <video> to the camera's native resolution (landscape), which
    letterboxes on a portrait phone unless we override it here. */
