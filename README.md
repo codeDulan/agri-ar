@@ -56,13 +56,13 @@ Repo: https://github.com/codeDulan/agri-ar
 | Asset | Author | Source | Licence |
 |-------|--------|--------|---------|
 | `turbine.glb` | Kay Lousberg | poly.pizza/m/79RIeBw3Wk | CC0 1.0 |
-| `crop.glb` | Quaternius | poly.pizza/m/Ro6K0Yg7mx | CC0 1.0 |
+| `crop.glb` ("Field of corn") | Poly by Google | poly.pizza/m/dE73diXi82k | **CC-BY 3.0** — attribution required |
 
 ### Optimization results (gltf-transform pipeline)
 
 | Model | Raw | Optimized | Reduction |
 |-------|-----|-----------|-----------|
 | turbine | 59.2 KB | 33.1 KB | 44 % |
-| crop | 1.98 MB | 143 KB | 93 % (Draco geometry compression) |
+| crop (corn field) | 2.09 MB | 63 KB | 97 % (512px WebP texture + Draco) |
 
-Pipeline: dedup → prune → center → resize(1024) → weld → simplify(0.75) → Draco.
+Pipeline: dedup → prune → center → resize(512) → WebP(72) → weld → simplify(0.65) → Draco.
