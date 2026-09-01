@@ -74,12 +74,13 @@
         spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
 
       <!-- live weather visuals -->
-      <a-entity weather-fx="turbine: #turbine-ent; panel: #ml-readout; panelRoot: #ml-panel"></a-entity>
+      <a-entity weather-fx="turbine: #turbine-ent; panel: #ml-readout; panelRoot: #ml-panel;
+        mode: markerless"></a-entity>
 
       <!-- Model B: crop plot — colour driven by live air quality (Step 6) -->
       <a-entity id="crop-markerless" position="0.7 0.005 0.1"
         gltf-model="#crop" gltf-fallback="#crop-fallback"
-        scale="0.7 0.7 0.7"></a-entity>
+        scale="0.7 0.7 0.7" crop-health></a-entity>
 
       <a-sphere position="-0.55 1.1 0" radius="0.04" color="#7CFC00"
         animation="property: material.opacity; from: 1; to: 0.15; dir: alternate; loop: true; dur: 700"></a-sphere>
@@ -97,6 +98,7 @@
 
   <script src="js/gltf-fallback.js"></script>
   <script src="js/spin-part.js"></script>
+  <script src="js/crop-health.js"></script>
   <script src="js/billboard.js"></script>
   <script src="js/weather-fx.js"></script>
   <script src="js/ar-shell.js"></script>

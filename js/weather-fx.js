@@ -15,6 +15,8 @@ AFRAME.registerComponent('weather-fx', {
     turbine:   { type: 'selector' },
     panel:     { type: 'selector' },
     panelRoot: { type: 'selector' },
+    ring:      { type: 'selector' },              // optional status ring (marker mode)
+    mode:      { default: 'marker' },             // 'marker' | 'markerless'
     rainCount: { type: 'int', default: 140 }
   },
 
@@ -67,7 +69,39 @@ AFRAME.registerComponent('weather-fx', {
     }
 
     this._apply(d.condition);
-    this._updatePanel(d);
+
+    const health = this._cropHealth(d);
+    document.dispatchEvent(new CustomEvent('crop-health', { detail: health }));
+    if (this.data.ring && this.data.ring.setAttribute) {
+      this.data.ring.setAttribute('material', 'color', health.hex);
+    }
+
+    this._updatePanel(d, health);
+  },
+
+  // crop health 0..100 from temperature / wind / condition
+  _cropHealth(d) {
+    let h = 100;
+    if (d.temperature < 10) h -= (10 - d.temperature) * 4;
+    else if (d.temperature > 32) h -= (d.temperature - 32) * 5;
+    if (d.windSpeed > 8) h -= (d.windSpeed - 8) * 3;
+    if (d.condition === 'rain') h += 4;
+    if (d.condition === 'clear' && d.temperature > 34) h -= 6;
+    h = Math.max(0, Math.min(100, Math.round(h)));
+
+    // green (#3fae3f) -> amber (#c9a227) -> brown (#7a4a1e)
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const hex2 = (n) => Math.round(n).toString(16).padStart(2, '0');
+    let r, g, b;
+    if (h >= 50) {
+      const t = (100 - h) / 50;
+      r = lerp(0x3f, 0xc9, t); g = lerp(0xae, 0xa2, t); b = lerp(0x3f, 0x27, t);
+    } else {
+      const t = (50 - h) / 50;
+      r = lerp(0xc9, 0x7a, t); g = lerp(0xa2, 0x4a, t); b = lerp(0x27, 0x1e, t);
+    }
+    const label = h >= 70 ? 'Healthy' : h >= 45 ? 'Stressed' : 'Poor';
+    return { value: h, hex: '#' + hex2(r) + hex2(g) + hex2(b), label };
   },
 
   _apply(condition) {
@@ -79,14 +113,23 @@ AFRAME.registerComponent('weather-fx', {
     this.rain.mesh.visible = rain;
   },
 
-  _updatePanel(d) {
+  _updatePanel(d, health) {
     if (this.data.panelRoot) this.data.panelRoot.setAttribute('visible', true);
     if (!this.data.panel) return;
-    const label = { clear: 'Sunny', cloudy: 'Cloudy', rain: 'Rainy' }[d.condition] || '—';
-    const txt =
-      `${d.place}   ${d.temperature}°C\n` +
-      `Wind ${d.windSpeed} m/s  ${d.windCompass} (${d.windDir}°)\n` +
-      `${label}`;
+    const sky = { clear: 'Sunny', cloudy: 'Cloudy', rain: 'Rainy' }[d.condition] || '—';
+
+    let txt;
+    if (this.data.mode === 'markerless') {
+      // compact — this mode is about the space, not the numbers
+      txt = `${d.place}\n${sky} · ${d.temperature}°C · wind ${d.windSpeed} m/s ${d.windCompass}`;
+    } else {
+      // marker = data-first inspection view
+      txt =
+        `FIELD SENSOR 01 — ${d.place}\n` +
+        `${sky}   ${d.temperature}°C\n` +
+        `Wind ${d.windSpeed} m/s  ${d.windCompass} (${d.windDir}°)\n` +
+        `Crop health ${health.value}%  ${health.label}`;
+    }
     this.data.panel.setAttribute('text', 'value', txt);
   },
 
