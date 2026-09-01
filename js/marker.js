@@ -4,9 +4,11 @@
 const marker = document.querySelector('#hiro');
 const scanHint = document.querySelector('#scan-hint');
 
+let announced = false;
 marker.addEventListener('markerFound', () => {
   window.setStatus('Marker locked ✓');
   scanHint.style.display = 'none';
+  if (!announced) { window.AgriAudio?.ping(); announced = true; }
 });
 
 marker.addEventListener('markerLost', () => {

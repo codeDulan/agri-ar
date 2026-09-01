@@ -112,6 +112,8 @@ html, body {
 .btn:hover { background: #ffffff24; }
 .btn--ghost { background: transparent; }
 
+#sound { padding: 6px 9px; font-size: 15px; line-height: 1; }
+
 /* AR.js in embedded mode: force the webcam video + canvas to fill the viewport.
    AR.js sizes the <video> to the camera's native resolution (landscape), which
    letterboxes on a portrait phone unless we override it here. */

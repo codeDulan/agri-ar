@@ -31,14 +31,26 @@ AFRAME.registerComponent('weather-fx', {
 
     this._apply('clear');
 
-    this._onWeather = (e) => this._handle(e.detail);
+    this._hasData = false;
+    this._onWeather = (e) => { this._hasData = true; this._handle(e.detail); };
     document.addEventListener('weather-updated', this._onWeather);
+
+    this._onError = (e) => {
+      if (this._hasData) return;                 // keep last good reading
+      if (this.data.panelRoot) this.data.panelRoot.setAttribute('visible', true);
+      if (this.data.panel) {
+        this.data.panel.setAttribute('text', 'value',
+          'Live weather unavailable\n(' + (e.detail || 'network error') + ')\nShowing default scene');
+      }
+    };
+    document.addEventListener('weather-error', this._onError);
 
     if (window.AgriWeather && window.AgriWeather.data) this._handle(window.AgriWeather.data);
   },
 
   remove() {
     document.removeEventListener('weather-updated', this._onWeather);
+    document.removeEventListener('weather-error', this._onError);
   },
 
   // --------------------------------------------------------------------
@@ -81,14 +93,14 @@ AFRAME.registerComponent('weather-fx', {
   // --- builders ------------------------------------------------------
   _makeSun() {
     const g = new THREE.Group();
-    g.position.set(1.4, 2.6, -1.2);
+    g.position.set(1.15, 1.95, -0.7);
     const core = new THREE.Mesh(
-      new THREE.SphereGeometry(0.28, 20, 20),
+      new THREE.SphereGeometry(0.16, 20, 20),
       new THREE.MeshBasicMaterial({ color: 0xffe066 })
     );
     const glow = new THREE.Mesh(
-      new THREE.SphereGeometry(0.45, 20, 20),
-      new THREE.MeshBasicMaterial({ color: 0xffd54a, transparent: true, opacity: 0.25 })
+      new THREE.SphereGeometry(0.27, 20, 20),
+      new THREE.MeshBasicMaterial({ color: 0xffd54a, transparent: true, opacity: 0.22 })
     );
     g.add(core, glow);
     return g;
@@ -96,9 +108,9 @@ AFRAME.registerComponent('weather-fx', {
 
   _makeClouds() {
     const g = new THREE.Group();
-    g.position.set(0.2, 2.4, -0.6);
+    g.position.set(0.1, 1.9, -0.5);
     const mat = new THREE.MeshLambertMaterial({ color: 0xdfe4e8 });
-    const puffs = [[0,0,0,0.5],[0.5,0.05,0.1,0.4],[-0.5,0.02,-0.05,0.42],[0.15,-0.05,0.35,0.34]];
+    const puffs = [[0,0,0,0.28],[0.28,0.03,0.05,0.22],[-0.28,0.01,-0.03,0.23],[0.08,-0.03,0.2,0.19]];
     puffs.forEach(([x,y,z,r]) => {
       const m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 14), mat);
       m.position.set(x, y, z);
@@ -114,7 +126,7 @@ AFRAME.registerComponent('weather-fx', {
     const mesh = new THREE.InstancedMesh(geo, mat, count);
     mesh.frustumCulled = false;
 
-    const area = { x: 2.6, z: 2.0, top: 2.9, bottom: 0 };
+    const area = { x: 1.9, z: 1.4, top: 2.2, bottom: 0 };
     const drops = [];
     const dummy = new THREE.Object3D();
     for (let i = 0; i < count; i++) {

@@ -40,6 +40,7 @@ scene.addEventListener('ar-hit-test-achieved', () => {
 // Fired by ar-hit-test right after it places the target on tap.
 scene.addEventListener('ar-hit-test-select', () => {
   placed = true;
+  window.AgriAudio?.ping();
   window.setStatus('Farm placed ✓');
   hint.hidden = true;
   controls.hidden = false;

@@ -17,6 +17,7 @@
     <header id="topbar">
       <button id="back" class="btn btn--ghost">‹ Menu</button>
       <span class="logo">🎯 Marker AR</span>
+      <button id="sound" class="btn" aria-pressed="false">🔇</button>
       <span id="status">starting camera…</span>
     </header>
 
@@ -91,10 +92,10 @@
       </a-entity>
 
       <!-- data panel (hidden until Step 6 wires live values in) -->
-      <a-entity id="marker-panel" visible="false" position="0 1.55 0" rotation="-90 0 0">
-        <a-plane width="1.7" height="0.62" material="color: #0c1a12; opacity: 0.78; transparent: true"></a-plane>
+      <a-entity id="marker-panel" visible="false" position="0 1.8 0" billboard>
+        <a-plane width="1.15" height="0.5" material="color: #0c1a12; opacity: 0.8; transparent: true; side: double"></a-plane>
         <a-entity id="marker-readout" position="0 0 0.01"
-          text="value: ; align: center; width: 2.1; color: #eafaf0; wrapCount: 30"></a-entity>
+          text="value: ; align: center; width: 1.5; color: #eafaf0; wrapCount: 26"></a-entity>
       </a-entity>
     </a-marker>
 
@@ -103,8 +104,11 @@
 
   <script src="js/gltf-fallback.js"></script>
   <script src="js/spin-part.js"></script>
+  <script src="js/billboard.js"></script>
   <script src="js/weather-fx.js"></script>
   <script src="js/ar-shell.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/sound-toggle.js"></script>
   <script src="js/weather.js"></script>
   <script src="js/city-search.js"></script>
   <script src="js/marker.js"></script>
