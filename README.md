@@ -50,7 +50,7 @@ Repo: https://github.com/codeDulan/agri-ar
 - [x] Step 7 — audio, billboard panels, error handling
 - [x] Step 7b — marker = 3-scenario demo; markerless = live data + gestures
 - [ ] Step 8 — cross-device testing + deploy
-- [ ] Step 9 — technical report + demo
+- [x] Step 9 — technical report drafted (report/technical-report.html)
 
 ## Credits / licences
 
