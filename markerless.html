@@ -59,7 +59,8 @@
     </a-entity>
 
     <!-- ===== the farm scene: hidden until the user taps a detected surface ===== -->
-    <a-entity id="farm" visible="false" scale="0.16 0.16 0.16">
+    <a-entity id="farm" visible="false" scale="0.16 0.16 0.16"
+      gesture-transform="min: 0.05; max: 0.45">
 
       <!-- shared ground field: solid, sunk just below the models -->
       <a-box position="0.3 -0.03 0" depth="1.8" width="2.6" height="0.06"
@@ -92,12 +93,13 @@
       </a-entity>
     </a-entity>
 
-    <a-camera></a-camera>
+    <a-camera look-controls="enabled: false" wasd-controls="enabled: false"></a-camera>
   </a-scene>
 
   <script src="js/gltf-fallback.js"></script>
   <script src="js/spin-part.js"></script>
   <script src="js/billboard.js"></script>
+  <script src="js/gesture-transform.js"></script>
   <script src="js/weather-fx.js"></script>
   <script src="js/ar-shell.js"></script>
   <script src="js/audio.js"></script>

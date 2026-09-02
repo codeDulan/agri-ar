@@ -42,9 +42,11 @@ scene.addEventListener('ar-hit-test-select', () => {
   placed = true;
   window.AgriAudio?.ping();
   window.setStatus('Farm placed ✓');
-  hint.hidden = true;
+  hint.textContent = 'Drag to rotate · pinch to resize';
+  hint.hidden = false;
   controls.hidden = false;
-  farm.emit('placed');            // Step 6 / audio can hook this
+  farm.setAttribute('gesture-transform', 'enabled', true);
+  farm.emit('placed');
 });
 
 // --- re-place button --------------------------------------------------
@@ -59,6 +61,9 @@ document.addEventListener('weather-updated', (e) => {
 resetBtn.addEventListener('click', () => {
   placed = false;
   farm.setAttribute('visible', false);
+  farm.setAttribute('gesture-transform', 'enabled', false);
+  farm.object3D.rotation.set(0, 0, 0);
+  farm.object3D.scale.set(0.16, 0.16, 0.16);
   scene.setAttribute('ar-hit-test', 'enabled', true);
   window.setStatus('Scanning for a surface…');
   hint.textContent = 'Tap a surface to place the farm.';
@@ -78,5 +83,7 @@ scene.addEventListener('loaded', async () => {
     farm.setAttribute('visible', true);
     farm.setAttribute('position', '0 0 -0.6');
     farm.setAttribute('scale', '0.12 0.12 0.12');
+    farm.setAttribute('gesture-transform', 'enabled', true);
+    hint.innerHTML += '<br />Drag to rotate the preview.';
   }
 });

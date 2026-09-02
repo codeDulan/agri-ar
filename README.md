@@ -47,7 +47,8 @@ Repo: https://github.com/codeDulan/agri-ar
 - [x] Step 5 — markerless AR (WebXR hit-test, tap-to-place)
 - [x] Deploy — GitHub Pages live at https://codedulan.github.io/agri-ar/
 - [x] Step 6 — live Open-Meteo data (wind speed/dir -> turbine, sunny/rainy -> sky, data panel)
-- [x] Step 7 — procedural audio (wind/rain/chime), billboard panels, error handling
+- [x] Step 7 — audio, billboard panels, error handling
+- [x] Step 7b — marker = 3-scenario demo; markerless = live data + gestures
 - [ ] Step 8 — cross-device testing + deploy
 - [ ] Step 9 — technical report + demo
 
