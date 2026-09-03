@@ -37,9 +37,9 @@
     renderer="colorManagement: true; antialias: true"
     loading-screen="enabled: false"
     gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
-    webxr="requiredFeatures: hit-test,local-floor; optionalFeatures: dom-overlay; overlayElement: #ui"
-    ar-hit-test="target: #farm; type: map; mapSize: 0.3 0.3"
-    xr-mode-ui="XRMode: ar">
+    webxr="requiredFeatures: hit-test; optionalFeatures: local-floor,dom-overlay; overlayElement: #ui"
+    ar-hit-test="target: #farm"
+    xr-mode-ui="enabled: true; XRMode: ar">
 
     <a-assets timeout="15000">
       <a-asset-item id="turbine" src="assets/models/turbine.glb"></a-asset-item>
