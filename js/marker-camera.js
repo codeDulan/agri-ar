@@ -1,9 +1,13 @@
-// AR.js picks the first enumerated camera, which on many Android phones
-// (e.g. Pixel) is the SELFIE camera. This resolves the rear camera first
-// and hands its deviceId to AR.js before the arjs component initialises.
+// Camera control for the marker page.
 //
-// marker.html's <a-scene> intentionally has NO `arjs` attribute — we add it
-// here once the correct camera is known.
+// AR.js often opens the selfie camera on multi-camera Android phones and
+// ignores a `deviceId` passed once. This module:
+//   1. resolves the list of video cameras (rear first)
+//   2. starts AR.js on the rear camera
+//   3. exposes a switch-camera button that fully re-initialises the AR.js
+//      source on the next camera (remove + re-add the `arjs` component)
+//
+// marker.html's <a-scene> has NO `arjs` attribute at parse time — we add it here.
 
 (function () {
   const BASE =
@@ -12,44 +16,63 @@
     'displayWidth: 1280; displayHeight: 960;';
 
   const scene = document.querySelector('a-scene');
+  const btn = document.querySelector('#cam-switch');
 
-  async function pickRearCamera() {
-    let deviceId = null;
+  let cameras = [];   // [{ deviceId, label }]
+  let index = 0;
 
-    // 1. Ask for the environment-facing camera; this also unlocks device labels.
+  function isRear(label) { return /back|rear|environment/i.test(label || ''); }
+
+  async function enumerate() {
+    const list = (await navigator.mediaDevices.enumerateDevices())
+      .filter((d) => d.kind === 'videoinput')
+      .map((d) => ({ deviceId: d.deviceId, label: d.label }));
+    // rear cameras first, then the rest
+    list.sort((a, b) => (isRear(b.label) ? 1 : 0) - (isRear(a.label) ? 1 : 0));
+    return list;
+  }
+
+  function applyCamera(deviceId) {
+    const arjs = BASE + (deviceId ? ' deviceId: ' + deviceId + ';' : '');
+    // A plain setAttribute update does not restart the AR.js video source,
+    // so remove the component and re-add it on the next frame.
+    scene.removeAttribute('arjs');
+    requestAnimationFrame(() => scene.setAttribute('arjs', arjs));
+  }
+
+  async function init() {
+    // Unlock device labels + get an initial (ideally rear) stream.
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      const s = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' } }
       });
-      const track = stream.getVideoTracks()[0];
-      deviceId = track.getSettings().deviceId || null;
-      stream.getTracks().forEach((t) => t.stop());
-      window.setStatus?.('Camera ready — show the marker');
+      s.getTracks().forEach((t) => t.stop());
     } catch (err) {
       window.setStatus?.('⚠️ Camera blocked: ' + err.name);
       const hint = document.querySelector('#scan-hint');
       if (hint) hint.textContent =
-        'Camera permission denied. Enable it in the address bar and reload.';
-      return null;
+        'Camera permission denied — enable it in the address bar and reload.';
+      if (btn) btn.hidden = true;
+      return;
     }
 
-    // 2. If several cameras exist, prefer one whose label looks rear-facing.
-    try {
-      const cams = (await navigator.mediaDevices.enumerateDevices())
-        .filter((d) => d.kind === 'videoinput');
-      const rear = cams.find((d) => /back|rear|environment/i.test(d.label));
-      if (rear) deviceId = rear.deviceId;
-    } catch (_) { /* keep the facingMode result */ }
+    cameras = await enumerate();
+    if (cameras.length <= 1 && btn) btn.hidden = true;
 
-    return deviceId;
+    index = 0;                       // enumerate() put a rear camera first
+    applyCamera(cameras[0] ? cameras[0].deviceId : null);
+    window.setStatus?.('Camera ready — show the marker');
   }
 
-  async function start() {
-    const deviceId = await pickRearCamera();
-    const arjs = BASE + (deviceId ? ' deviceId: ' + deviceId + ';' : '');
-    scene.setAttribute('arjs', arjs);
-  }
+  btn?.addEventListener('click', async () => {
+    if (!cameras.length) cameras = await enumerate();
+    if (!cameras.length) return;
+    index = (index + 1) % cameras.length;
+    const cam = cameras[index];
+    window.setStatus?.(isRear(cam.label) ? 'Rear camera' : 'Front camera');
+    applyCamera(cam.deviceId);
+  });
 
-  if (scene.hasLoaded) start();
-  else scene.addEventListener('loaded', start);
+  if (scene.hasLoaded) init();
+  else scene.addEventListener('loaded', init);
 })();

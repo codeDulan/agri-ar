@@ -112,7 +112,7 @@ html, body {
 .btn:hover { background: #ffffff24; }
 .btn--ghost { background: transparent; }
 
-#sound { padding: 6px 9px; font-size: 15px; line-height: 1; }
+#sound, #cam-switch { padding: 6px 9px; font-size: 15px; line-height: 1; }
 
 .btn.is-active {
   background: #5cae4e;
