@@ -16,16 +16,16 @@ marker.addEventListener('markerLost', () => {
   scanHint.style.display = '';
 });
 
-// AR.js requests the camera as soon as the scene initialises. If the user
-// blocks it (or there is no camera) getUserMedia rejects — tell them why.
+// Note: we deliberately do NOT pre-open the camera here. Opening and then
+// closing a stream right before AR.js opens its own caused Android Chrome to
+// fall back to the front camera. AR.js handles the getUserMedia call and its
+// own error reporting; we surface a generic hint if the video never appears.
 window.addEventListener('load', () => {
-  navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(stream => {
-      stream.getTracks().forEach(t => t.stop()); // release; AR.js opens its own
-      window.setStatus('Camera ready — show the marker');
-    })
-    .catch(err => {
-      window.setStatus('⚠️ Camera blocked: ' + err.name);
-      scanHint.innerHTML = 'Camera permission denied. Enable it in the address bar and reload.';
-    });
+  setTimeout(() => {
+    const v = document.querySelector('video');
+    if (!v || !v.srcObject) {
+      window.setStatus('⚠️ Camera not available');
+      scanHint.innerHTML = 'Allow camera access and reload the page.';
+    }
+  }, 5000);
 });
