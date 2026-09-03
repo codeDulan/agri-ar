@@ -63,9 +63,9 @@
       <a-entity id="station" position="0 0 0">
 
         <!-- shared ground: one solid rectangular field, sunk just below the models -->
-        <a-box position="0.05 -0.03 0" depth="1.4" width="1.9" height="0.06"
+        <a-box id="field-top-m" position="0.05 -0.03 0" depth="1.4" width="1.9" height="0.06"
           material="color: #5cae4e; roughness: 1"></a-box>
-        <a-box position="0.05 -0.062 0" depth="1.5" width="2.0" height="0.02"
+        <a-box id="field-base-m" position="0.05 -0.062 0" depth="1.5" width="2.0" height="0.02"
           material="color: #2f5d29; roughness: 1"></a-box>
 
         <!-- Model A: wind turbine -->
@@ -79,6 +79,7 @@
 
         <!-- weather visuals + crop tint, driven by the scenario buttons -->
         <a-entity weather-fx="turbine: #turbine-ent; crop: #crop-marker;
+          field: #field-top-m; fieldBase: #field-base-m;
           panel: #marker-readout; panelRoot: #marker-panel"></a-entity>
 
         <!-- blinking status LED -->

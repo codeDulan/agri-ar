@@ -14,6 +14,8 @@ AFRAME.registerComponent('weather-fx', {
   schema: {
     turbine:   { type: 'selector' },
     crop:      { type: 'selector' },
+    field:     { type: 'selector' },   // top ground surface
+    fieldBase: { type: 'selector' },   // thin rim below it
     panel:     { type: 'selector' },
     panelRoot: { type: 'selector' },
     rainCount: { type: 'int', default: 140 }
@@ -86,7 +88,19 @@ AFRAME.registerComponent('weather-fx', {
 
     this._apply(d.condition);
     this._tintCrop(d.condition);
+    this._tintField(d.condition);
     this._updatePanel(d);
+  },
+
+  // ground colour per condition: dry sun, lush rain, natural otherwise
+  _tintField(condition) {
+    const cfg = {
+      clear:  { top: '#c2ad6b', base: '#7f6f38' },
+      rain:   { top: '#3f9a45', base: '#276b2c' },
+      cloudy: { top: '#5cae4e', base: '#2f5d29' }
+    }[condition] || { top: '#5cae4e', base: '#2f5d29' };
+    if (this.data.field)     this.data.field.setAttribute('material', 'color', cfg.top);
+    if (this.data.fieldBase) this.data.fieldBase.setAttribute('material', 'color', cfg.base);
   },
 
   // Sunny -> dry/brown, Rainy -> lush green, Cloudy/windy -> natural (original)

@@ -63,9 +63,9 @@
       gesture-transform="min: 0.05; max: 0.45">
 
       <!-- shared ground field: solid, sunk just below the models -->
-      <a-box position="0.3 -0.03 0" depth="1.8" width="2.6" height="0.06"
+      <a-box id="field-top-ml" position="0.3 -0.03 0" depth="1.8" width="2.6" height="0.06"
         material="color: #5cae4e; roughness: 1"></a-box>
-      <a-box position="0.3 -0.062 0" depth="1.9" width="2.7" height="0.02"
+      <a-box id="field-base-ml" position="0.3 -0.062 0" depth="1.9" width="2.7" height="0.02"
         material="color: #2f5d29; roughness: 1"></a-box>
 
       <!-- Model A: wind turbine — blades + yaw driven by live wind -->
@@ -75,7 +75,9 @@
         spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
 
       <!-- live weather visuals -->
-      <a-entity weather-fx="turbine: #turbine-ent; panel: #ml-readout; panelRoot: #ml-panel"></a-entity>
+      <a-entity weather-fx="turbine: #turbine-ent; crop: #crop-markerless;
+        field: #field-top-ml; fieldBase: #field-base-ml;
+        panel: #ml-readout; panelRoot: #ml-panel"></a-entity>
 
       <!-- Model B: crop plot — colour driven by live air quality (Step 6) -->
       <a-entity id="crop-markerless" position="0.9 0.005 0"
