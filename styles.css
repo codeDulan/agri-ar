@@ -79,24 +79,39 @@ html, body {
 #ui button,
 #ui .panel { pointer-events: auto; }
 
+/* class-based display rules beat the [hidden] UA rule, so make it explicit */
+[hidden] { display: none !important; }
+
 #topbar {
   position: absolute;
   top: 0; left: 0; right: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: linear-gradient(#000c, #0000);
+  gap: 8px;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 10px;
+  background: linear-gradient(#000d, #0000);
 }
-#topbar .logo { font-weight: 700; font-size: 15px; flex: 1; }
+#topbar .logo {
+  font-weight: 700;
+  font-size: 15px;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 #status {
-  font-size: 12px;
-  opacity: 0.85;
-  background: #ffffff1a;
-  padding: 4px 8px;
+  flex: none;
+  font-size: 11.5px;
+  opacity: 0.9;
+  background: #ffffff1f;
+  padding: 4px 9px;
   border-radius: 999px;
   white-space: nowrap;
+  max-width: 44vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn {
@@ -121,8 +136,6 @@ html, body {
   font-weight: 700;
 }
 
-/* marker page: lift the scan hint above the scenario bar */
-#scan-hint { bottom: 84px; }
 
 /* AR.js in embedded mode: force the webcam video + canvas to fill the viewport.
    AR.js sizes the <video> to the camera's native resolution (landscape), which
@@ -146,31 +159,39 @@ video#arjs-video {
   margin: 0 !important;
 }
 
+/* Bottom UI: hint sits on the upper row, controls on the lower row,
+   both clear of the phone's home indicator. */
 .hint {
   position: absolute;
   left: 50%;
-  bottom: 26px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
   transform: translateX(-50%);
-  max-width: 88vw;
+  width: max-content;
+  max-width: min(90vw, 460px);
   font-size: 12px;
-  background: #000000a6;
-  padding: 8px 14px;
-  border-radius: 999px;
+  line-height: 1.4;
+  background: #000000b3;
+  padding: 9px 15px;
+  border-radius: 14px;
   text-align: center;
 }
+.hint a { color: #9fe6b4; }
 
 .controls {
   position: absolute;
   left: 50%;
-  bottom: 24px;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 94vw;
 }
 
 .searchbar {
   position: absolute;
-  top: 52px;
+  top: calc(env(safe-area-inset-top, 0px) + 58px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
