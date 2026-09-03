@@ -35,8 +35,12 @@
   function applyCamera(deviceId) {
     const arjs = BASE + (deviceId ? ' deviceId: ' + deviceId + ';' : '');
     // A plain setAttribute update does not restart the AR.js video source,
-    // so remove the component and re-add it on the next frame.
+    // so remove the component, tear down its <video>, and re-add it.
     scene.removeAttribute('arjs');
+    document.querySelectorAll('video').forEach((v) => {
+      try { v.srcObject && v.srcObject.getTracks().forEach((t) => t.stop()); } catch (_) {}
+      v.remove();
+    });
     requestAnimationFrame(() => scene.setAttribute('arjs', arjs));
   }
 
