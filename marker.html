@@ -34,11 +34,11 @@
     </div>
   </div>
 
+  <!-- `arjs` is added at runtime by js/marker-camera.js once the rear camera is resolved -->
   <a-scene embedded loading-screen="enabled: false"
     vr-mode-ui="enabled: false" xr-mode-ui="enabled: false"
     renderer="colorManagement: true; antialias: true; alpha: true"
-    gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
-    arjs="sourceType: webcam; detectionMode: mono; matrixCodeType: 3x3; debugUIEnabled: false; sourceWidth: 1280; sourceHeight: 960; displayWidth: 1280; displayHeight: 960;">
+    gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/">
 
     <a-assets timeout="15000">
       <a-asset-item id="turbine" src="assets/models/turbine.glb"></a-asset-item>
@@ -99,6 +99,7 @@
   </a-scene>
 
   <script src="js/gltf-fallback.js"></script>
+  <script src="js/marker-camera.js"></script>
   <script src="js/spin-part.js"></script>
   <script src="js/billboard.js"></script>
   <script src="js/weather-fx.js"></script>
