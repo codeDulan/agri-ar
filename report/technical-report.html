@@ -315,7 +315,7 @@
     </div>
 
     <h3>Scene &amp; visual design</h3>
-    <p>Both modes render the same farm: a wind turbine and an optimised corn field on a solid raised green plot, lit by an ambient plus a directional light. A dark translucent data panel floats above the scene and always faces the viewer. Sky effects (a sun, or clouds with falling rain) appear above the field according to conditions. The palette is kept muted and the panel compact so the virtual content competes with reality, not with a blank page.</p>
+    <p>Both modes render the same farm: a wind turbine and an optimised corn field on a solid raised plot, lit by an ambient plus a directional light. The plot and the corn re-colour with the conditions (dry tan, lush green, or natural). A dark translucent data panel floats above the scene and always faces the viewer. Sky effects (a sun, or clouds with falling rain) appear above the field according to conditions. The palette is kept muted and the panel compact so the virtual content competes with reality, not with a blank page.</p>
 
     <h3>Asset strategy</h3>
     <p>Both 3D models are openly licensed and were optimised for web delivery rather than modelled from scratch (see §3). Audio is synthesised at runtime with the Web Audio API, so there are no media files to host or license.</p>
@@ -344,7 +344,8 @@
     <p>The scene declares <code>arjs="sourceType: webcam; detectionMode: mono; ..."</code> and anchors content inside <code>&lt;a-marker preset="hiro"&gt;</code> with pose smoothing (<code>smoothCount: 8</code>, <code>smoothTolerance: 0.01</code>) to reduce jitter. <code>markerFound</code> / <code>markerLost</code> events drive the status line, the scan hint, and a confirmation chime.</p>
 
     <h3>Markerless tracking</h3>
-    <p>The scene requests <code>webxr="requiredFeatures: hit-test,local-floor; optionalFeatures: dom-overlay"</code> with the HUD as the DOM overlay so it stays visible during the session. <code>ar-hit-test</code> runs a hit-test against detected surfaces, shows a reticle, and on the user’s screen tap teleports the farm entity to the reticle and reveals it. A finite-state flow — <em>scanning → surface achieved → placed → manipulating</em> — governs which UI and interactions are active.</p>
+    <p>The scene requests <code>webxr="requiredFeatures: hit-test; optionalFeatures: local-floor,dom-overlay"</code> with the HUD as the DOM overlay so it stays visible during the session. <code>ar-hit-test</code> runs a hit-test against detected surfaces, shows a reticle, and on the user’s screen tap teleports the farm entity to the reticle and reveals it. A finite-state flow — <em>scanning → surface achieved → placed → manipulating</em> — governs which UI and interactions are active.</p>
+    <p>Because plane detection quality varies with lighting and surface texture, a <strong>fallback placement</strong> path was added: if no surface is reported within six seconds, the HUD invites the user to tap anywhere and the farm is dropped one metre ahead of the camera at an estimated floor height, computed from the camera pose. The hit-test path remains primary; the fallback only guarantees the experience is always usable.</p>
 
     <h3>Custom A-Frame components</h3>
     <div class="tw">
@@ -352,7 +353,7 @@
         <thead><tr><th>Component</th><th>Responsibility</th></tr></thead>
         <tbody>
           <tr><td><code>spin-part</code></td><td>Rotates only the turbine’s blade sub-mesh (<code>windturbine_tall_fan</code>), read from <code>window.turbineRPM</code>; logs available mesh names on miss</td></tr>
-          <tr><td><code>weather-fx</code></td><td>Turns a weather record into scene state: blade RPM, turbine yaw, sun/clouds/rain, crop tint, panel text</td></tr>
+          <tr><td><code>weather-fx</code></td><td>Turns a weather record into scene state: blade RPM, turbine yaw, sun/clouds/rain, crop-model tint, ground-field colour, panel text</td></tr>
           <tr><td><code>gesture-transform</code></td><td>One-finger drag → Y-rotation; two-finger pinch → clamped scale; ignores touches on UI</td></tr>
           <tr><td><code>billboard</code></td><td>Y-axis look-at so the data panel stays readable from any angle</td></tr>
           <tr><td><code>gltf-fallback</code></td><td>Clones a primitive stand-in on <code>model-error</code> so the scene never blanks</td></tr>
@@ -369,7 +370,7 @@
           <tr><td>Wind speed</td><td>Turbine blade rotation speed (RPM), capped for realism</td></tr>
           <tr><td>Wind direction</td><td>Turbine nacelle yaws to face into the wind</td></tr>
           <tr><td>WMO weather code</td><td>Clear → sun; cloud/fog → clouds; drizzle/rain/storm → clouds + 140 instanced raindrops</td></tr>
-          <tr><td>Condition + temperature</td><td>Corn field tints toward lush green, dry brown, or natural; ambient wind/rain audio level</td></tr>
+          <tr><td>Condition + temperature</td><td>Corn model <em>and</em> the ground field re-colour — dry tan under sun, lush green in rain, natural otherwise; ambient wind/rain audio level</td></tr>
           <tr><td>All values</td><td>On-scene panel: location, temperature, wind vector, sky state</td></tr>
         </tbody>
       </table>
@@ -377,7 +378,7 @@
     <p>The same event contract is reused by the marker page: its three scenario buttons synthesise <code>weather-updated</code> records, so one rendering pipeline serves both live data and the scripted demo.</p>
 
     <h3>Complex interaction</h3>
-    <p>Beyond clicks, the markerless mode provides multi-step spatial state management and direct manipulation: drag-to-rotate and pinch-to-scale the placed farm (touch and mouse), a reversible <em>Re-place</em> action that restores default transform, and a sound toggle. The marker mode adds stateful scenario switching with an active-state indicator.</p>
+    <p>Beyond clicks, the markerless mode provides multi-step spatial state management and direct manipulation: drag-to-rotate and pinch-to-scale the placed farm (touch and mouse), a reversible <em>Re-place</em> action that restores the default transform and re-arms surface scanning, and a sound toggle. The marker mode adds stateful scenario switching with an active-state indicator. The gesture handler is disabled until an object is actually placed and ignores any touch that begins on a HUD control.</p>
 
     <h3>Animation, lighting &amp; audio</h3>
     <ul>
@@ -406,20 +407,20 @@
     <h3>Device &amp; browser matrix</h3>
     <div class="tw">
       <table>
-        <thead><tr><th>Platform</th><th>Menu + capability check</th><th>Marker AR</th><th>Markerless AR</th></tr></thead>
+        <thead><tr><th>Platform</th><th>Menu / capability check</th><th>Marker AR</th><th>Markerless AR</th></tr></thead>
         <tbody>
-          <tr><td>Desktop Chrome (macOS)</td><td><span class="tick">Pass</span></td><td><span class="tick">Pass</span> (webcam)</td><td>3D preview (no WebXR) — as designed</td></tr>
-          <tr><td>Android Chrome + ARCore <span class="fill">device model</span></td><td><span class="tick">Pass</span></td><td><span class="tick">Pass</span></td><td><span class="tick">Pass</span> — hit-test, place, rotate, scale, live data</td></tr>
-          <tr><td>iOS Safari (iPhone <span class="fill">model</span>)</td><td><span class="tick">Pass</span></td><td><span class="tick">Pass</span></td><td>3D preview only — iOS has no WebXR (documented limitation)</td></tr>
+          <tr><td>Desktop Chrome (macOS)</td><td><span class="tick">Pass</span></td><td><span class="tick">Pass</span> — webcam, marker locks and tracks</td><td>Static 3D preview (no WebXR) — as designed; mouse-drag rotate works</td></tr>
+          <tr><td>Android Chrome + ARCore — Google Pixel 7 Pro</td><td><span class="tick">Pass</span></td><td>Marker tracks and all scenarios work, but the browser opens the front camera on this device (see §6.11)</td><td>AR session, live data, gestures and re-place work. Native hit-test was intermittent on this unit; the fallback placement was used to complete testing (see §6.12)</td></tr>
+          <tr><td>iOS Safari (iPhone)</td><td>Expected pass</td><td>Expected pass (AR.js supports iOS)</td><td>Static preview only — iOS Safari has no WebXR (platform limitation)</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="fill">Fill in the two device models and confirm the iOS row on a real iPhone before submitting; add a mid-range Android if available.</p>
+    <p class="fill">Confirm the iOS row on a real iPhone, and add a second Android device if one is available, before final submission.</p>
 
     <h3>Functional checks</h3>
     <ul>
       <li>Marker: content locks within ~1 s of the marker entering frame; each scenario button changes crop colour, sky, blade speed, and panel; chime fires; content hides on <code>markerLost</code>.</li>
-      <li>Markerless: reticle only appears on a detected surface; tap places the farm at real scale; it stays anchored while walking around; drag/pinch behave consistently; <em>Re-place</em> resets transform.</li>
+      <li>Markerless: the reticle appears only on a detected surface and a tap places the farm at real scale; where the surface is not detected, the six-second fallback lets the user tap to place. Once placed, the farm stays anchored while walking around; drag/pinch behave consistently; <em>Re-place</em> resets the transform and re-scans.</li>
       <li>Live data: searching “Colombo”, “London”, “Reykjavik” updates the panel, sky, turbine yaw and blade speed within one poll; an invalid city shows <em>“City not found”</em>.</li>
       <li>Resilience: denied camera → explained; denied location → silent fallback; offline API → <em>“Live weather unavailable”</em> with last reading kept; missing model → primitive placeholder.</li>
     </ul>
@@ -429,9 +430,11 @@
 
     <h3>Known limitations</h3>
     <ul>
-      <li>Markerless AR is unavailable on iOS Safari and needs a reasonably lit, textured surface for reliable plane detection.</li>
+      <li>Markerless AR is unavailable on iOS Safari, and WebXR plane detection needs a reasonably lit, textured surface; on the Pixel 7 Pro test unit the native hit-test was unreliable and the tap-to-place fallback carried the demo.</li>
+      <li>On the Pixel 7 Pro, Chrome opens the front camera for the AR.js (marker) page despite an <code>environment</code> facing-mode request; the marker still tracks, and the page works correctly on other cameras and on desktop.</li>
       <li>Typing a city inside an active WebXR session is unreliable under <code>dom-overlay</code>; the city is best set before entering AR.</li>
       <li>Shadows are approximate; there is no real-world light estimation.</li>
+      <li>The 3-minute demonstration video is recorded separately and submitted alongside this report.</li>
     </ul>
   </section>
 
@@ -440,10 +443,10 @@
     <p>Evaluated against Nielsen &amp; Molich’s heuristics as re-framed for augmented reality (“when the interface is the room”).</p>
     <div class="grid3">
       <div class="card"><h4><span class="h-n">1</span>Visibility of status</h4><p>A persistent status line reports every state — <em>starting camera, searching for marker, marker locked, scanning, surface found, farm placed, refreshing weather</em>. The menu’s capability check states support up front.</p></div>
-      <div class="card"><h4><span class="h-n">2</span>Match the real world</h4><p>Models sit on the detected plane or marker, are placed at real-world scale, cast shadows, and behave plausibly — the turbine faces the wind and spins faster in stronger wind; the crop dries under sun and greens in rain.</p></div>
+      <div class="card"><h4><span class="h-n">2</span>Match the real world</h4><p>Models sit on the detected plane or marker at real-world scale and behave plausibly — the turbine faces the wind and spins faster in stronger wind; the crop and the field dry under sun and green in rain, matching what the numbers say.</p></div>
       <div class="card"><h4><span class="h-n">3</span>Control &amp; freedom</h4><p><em>Re-place</em> undoes a bad placement and resets transform; scenarios switch freely; every page has a Menu button; gesture manipulation is fully reversible.</p></div>
       <div class="card"><h4><span class="h-n">4</span>Consistency</h4><p>One rendering pipeline and one HUD across both modes. A gesture has a single meaning — drag always rotates, pinch always scales — and manipulation exists only where a placed object exists.</p></div>
-      <div class="card"><h4><span class="h-n">5</span>Error prevention</h4><p>Placement is blocked until <code>ar-hit-test</code> actually reports a surface (“Surface found — tap to place”). The gesture handler ignores touches that begin on a UI control, preventing accidental transforms.</p></div>
+      <div class="card"><h4><span class="h-n">5</span>Error prevention</h4><p>The reticle appears only on a real detected surface, so the primary tap can’t place into thin air; the fallback is offered only after scanning has clearly failed. The gesture handler stays off until something is placed and ignores touches that begin on a control, preventing accidental transforms.</p></div>
       <div class="card"><h4><span class="h-n">6</span>Recognition, not recall</h4><p>Every action is an on-screen control — scenario bar, Refresh, Re-place, sound. The one gesture set is spelled out on screen (“Drag to rotate · pinch to resize”). Nothing is a hidden command.</p></div>
       <div class="card"><h4><span class="h-n">7</span>Minimalist design</h4><p>Translucent compact panel, single-line readout in markerless mode, controls hidden until relevant, sky effects scaled down after review. Content stays subordinate to the camera view.</p></div>
       <div class="card"><h4><span class="h-n">8</span>Recover from errors</h4><p>Messages say what to do: <em>“Camera blocked: NotAllowedError — enable it in the address bar”</em>, <em>“No WebXR — open on Android Chrome”</em>, <em>“Live weather unavailable — showing default scene”</em>.</p></div>
@@ -544,12 +547,49 @@
         <dt>Fix</dt><dd>Disabled <code>look-controls</code> — this is an AR app whose camera pose comes from the device — and had <code>gesture-transform</code> ignore any gesture that begins on a UI element.</dd>
       </dl>
     </div>
+
+    <div class="challenge">
+      <h4>11 · AR.js opened the selfie camera on the Pixel 7 Pro</h4>
+      <dl>
+        <dt>Symptom</dt><dd>The marker page consistently started on the front camera on one Android device, though it was correct on desktop and on other phones.</dd>
+        <dt>Cause</dt><dd>Two contributing factors: a pre-flight <code>getUserMedia</code> call used only to detect permission was opened and closed immediately before AR.js opened its own stream, and Android Chrome then re-acquired the default (front) camera; the device also appears to ignore a non-exact <code>facingMode: environment</code> hint.</dd>
+        <dt>Attempts that failed</dt><dd>Injecting a resolved rear <code>deviceId</code> into the <code>arjs</code> config after scene load left AR.js uninitialised (blank screen); swapping the <code>MediaStream</code> on AR.js’s <code>&lt;video&gt;</code> at runtime broke its AR controller on mobile. Both were reverted.</dd>
+        <dt>Resolution</dt><dd>Removed the pre-flight <code>getUserMedia</code> so AR.js performs a single clean camera request. This is a documented device-specific browser limitation rather than a project defect — marker tracking itself is unaffected.</dd>
+      </dl>
+    </div>
+
+    <div class="challenge">
+      <h4>12 · WebXR hit-test produced no reticle on the test device</h4>
+      <dl>
+        <dt>Symptom</dt><dd>The AR session started and the camera showed, but the status stayed on “Scanning for a surface…” — <code>ar-hit-test-achieved</code> never fired.</dd>
+        <dt>Cause</dt><dd>Two issues: <code>local-floor</code> was listed as a <em>required</em> feature, which can make a session request fail on devices that do not grant it; and the environment/surface was marginal for ARCore plane detection.</dd>
+        <dt>Fix</dt><dd>Relaxed <code>requiredFeatures</code> to <code>hit-test</code> only (with <code>local-floor</code> optional), and added a resilient fallback: six seconds after entering AR with no surface, the user can tap anywhere to place the farm one metre ahead of the camera at an estimated floor height, derived from the live camera pose. The hit-test path stays primary.</dd>
+      </dl>
+    </div>
+
+    <div class="challenge">
+      <h4>13 · Hidden HUD controls stayed visible and overlapped the hint text</h4>
+      <dl>
+        <dt>Symptom</dt><dd>The <em>Re-place</em> / <em>Weather</em> button bar rendered on top of the “Press Enter AR…” instruction before anything was placed.</dd>
+        <dt>Cause</dt><dd>The bar was hidden with the HTML <code>hidden</code> attribute, but the rule <code>.controls { display: flex }</code> has higher specificity than the user-agent <code>[hidden]</code> rule and overrode it.</dd>
+        <dt>Fix</dt><dd>Added an explicit <code>[hidden] { display: none !important; }</code> rule, then rebuilt the bottom overlay as two clearly separated rows with <code>env(safe-area-inset-*)</code> padding so nothing collides or sits under the phone’s home indicator. The status pill now truncates instead of pushing the layout.</dd>
+      </dl>
+    </div>
+
+    <div class="challenge">
+      <h4>14 · Crop tint silently stopped working in markerless mode</h4>
+      <dl>
+        <dt>Symptom</dt><dd>The corn model changed colour with the weather on the marker page but never on the markerless page.</dd>
+        <dt>Cause</dt><dd>An earlier revert of an abandoned feature also removed the <code>crop</code> selector from the markerless <code>weather-fx</code> declaration; there was no error because the selector is optional.</dd>
+        <dt>Fix</dt><dd>Restored the selector and, at the same time, extended <code>weather-fx</code> to also re-colour the ground field, caught during a side-by-side test of the two modes.</dd>
+      </dl>
+    </div>
   </section>
 
   <section>
     <h2><span class="num">07</span> Reflection</h2>
     <p><strong>What worked.</strong> Committing early to one weather-event contract meant the sky, turbine, crop and audio all reacted to a single source of truth, and the marker demo fell out of it for free. The asset pipeline as a checked-in script made model swaps painless — the corn field was replaced late in development in minutes. Deploying to GitHub Pages on day one made on-device testing continuous rather than a final-week scramble.</p>
-    <p><strong>What I would change.</strong> The two modes drifted toward being the same scene twice before I gave them distinct jobs; deciding the split first would have saved rework. I would also add WebXR light estimation for believable shadows, and a small offline cache so a dropped connection during a field visit keeps the last reading.</p>
+    <p><strong>What I would change.</strong> The two modes drifted toward being the same scene twice before I gave them distinct jobs; deciding the split first would have saved rework. I also spent too long fighting AR.js internals over the front-camera issue before accepting it as a device-specific browser constraint — testing on the target device earlier would have set that expectation. On the markerless side, the fallback placement should have been designed in from the start rather than added under pressure when hit-test proved unreliable on the test unit. Further work: WebXR light estimation for believable shadows, a small offline cache so a dropped connection during a field visit keeps the last reading, and a second Android device in the test matrix.</p>
     <p><strong>Against the learning outcomes.</strong> The project applies core AR concepts (fiducial and markerless tracking, pose smoothing, hit-testing, real-world scale), builds an interactive WebXR experience on standard frameworks, implements meaningful interaction with 3D content (placement, direct manipulation, data-driven state), and evaluates the result across devices and against recognised usability heuristics.</p>
   </section>
 
@@ -563,11 +603,12 @@
           <tr><td>Approved framework</td><td>A-Frame + AR.js <span class="tick">✓</span></td></tr>
           <tr><td>≥ 2 optimised 3D models</td><td>Turbine + corn field, Draco/WebP pipeline, 44% / 97% smaller <span class="tick">✓</span></td></tr>
           <tr><td>UI for XR/AR + animation, lighting or audio</td><td>HUD, scenario/placement controls; blade + rain animation; ambient + directional lights; procedural audio <span class="tick">✓</span></td></tr>
-          <tr><td>Marker-based AR</td><td>AR.js Hiro marker anchors the farm <span class="tick">✓</span></td></tr>
-          <tr><td>Markerless AR</td><td>WebXR hit-test / plane detection, tap-to-place <span class="tick">✓</span></td></tr>
-          <tr><td>Advanced — Option A (data-driven)</td><td>Open-Meteo live API alters turbine, sky, crop, audio, panel <span class="tick">✓</span></td></tr>
+          <tr><td>Marker-based AR</td><td>AR.js Hiro marker anchors the farm; three weather scenarios <span class="tick">✓</span></td></tr>
+          <tr><td>Markerless AR</td><td>WebXR Device API hit-test / plane detection, tap-to-place, with a camera-pose fallback placement <span class="tick">✓</span></td></tr>
+          <tr><td>Advanced — Option A (data-driven)</td><td>Open-Meteo live API alters turbine, sky, crop, ground field, audio and panel <span class="tick">✓</span></td></tr>
           <tr><td>Advanced — Option B (complex interaction)</td><td>Also included: drag-rotate, pinch-scale, multi-step placement state <span class="tick">✓</span></td></tr>
-          <tr><td>Report with dedicated challenges section</td><td>§6 <span class="tick">✓</span></td></tr>
+          <tr><td>Report with dedicated challenges section</td><td>§6 — 14 documented problems with exact fixes <span class="tick">✓</span></td></tr>
+          <tr><td>3-minute demonstration video</td><td>Submitted as a separate file alongside this report</td></tr>
         </tbody>
       </table>
     </div>
