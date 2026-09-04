@@ -25,8 +25,7 @@ function hitPlace() { return scene.components['hit-place']; }
 function finishPlacement() {
   placed = true;
   clearTimeout(fallbackTimer);
-  if (hitPlace()) hitPlace().paused = true;
-  document.querySelector('#reticle').setAttribute('visible', false);
+  if (hitPlace()) hitPlace().paused = true;       // stop following the aim
   window.AgriAudio?.ping();
   window.setStatus('Farm placed ✓');
   setHint('Drag to rotate · pinch to resize');
@@ -83,8 +82,8 @@ scene.addEventListener('hitplace-surface', () => {
   surfaceFound = true;
   clearTimeout(fallbackTimer);
   if (!placed) {
-    window.setStatus('Surface found — tap to place');
-    setHint('Tap the green ring to place the farm.');
+    window.setStatus('Aim, then tap to place');
+    setHint('The farm follows your aim — <strong>tap</strong> to drop it here.');
   }
 });
 
@@ -121,7 +120,8 @@ resetBtn.addEventListener('click', () => {
   farm.setAttribute('gesture-transform', 'enabled', false);
   farm.object3D.rotation.set(0, 0, 0);
   farm.object3D.scale.set(0.16, 0.16, 0.16);
-  if (hitPlace()) { hitPlace().paused = false; hitPlace().hasSurface = false; }
+  farm.setAttribute('visible', false);
+  if (hitPlace()) { hitPlace().paused = false; hitPlace().hasSurface = false; hitPlace().tracking = false; }
   window.setStatus('Scanning for a surface…');
   setHint('Tap a surface to place the farm.');
   controls.hidden = true;

@@ -39,7 +39,7 @@
     loading-screen="enabled: false"
     gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
     webxr="requiredFeatures: hit-test, local-floor; optionalFeatures: dom-overlay; overlayElement: #ui"
-    hit-place="reticle: #reticle"
+    hit-place="target: #farm"
     xr-mode-ui="enabled: true; XRMode: ar">
 
     <a-assets timeout="15000">
@@ -59,13 +59,7 @@
       <a-sphere radius="0.18" position="0 0.3 0" color="#3f9b45"></a-sphere>
     </a-entity>
 
-    <!-- hit-test reticle -->
-    <a-entity id="reticle" visible="false">
-      <a-ring rotation="-90 0 0" radius-inner="0.06" radius-outer="0.085"
-        material="color: #7ede6c; shader: flat; opacity: 0.9; transparent: true; side: double"></a-ring>
-    </a-entity>
-
-    <!-- ===== the farm scene: hidden until the user taps a detected surface ===== -->
+    <!-- ===== the farm scene: previews at the detected surface, locks on tap ===== -->
     <a-entity id="farm" visible="false" scale="0.16 0.16 0.16"
       gesture-transform="min: 0.05; max: 0.45">
 

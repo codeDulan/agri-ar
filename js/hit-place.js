@@ -1,24 +1,24 @@
 // A-Frame component: hit-place
-// Our own WebXR hit-test reticle + placement, replacing A-Frame 1.6's
-// `ar-hit-test` (which did not surface a reticle on the test device even
-// though the underlying hit-test API works).
+// Runs a WebXR hit-test and shows the target entity itself as a live preview at
+// the detected surface — the preview follows the user's aim, and a screen tap
+// over it locks the placement. Replaces A-Frame 1.6's `ar-hit-test` (which did
+// not surface anything on the test device despite the hit-test API working).
 //
-// <a-scene hit-place="reticle: #reticle">
-//   emits 'hitplace-surface' the first time a surface is seen
-//   emits 'hitplace-select' (detail: {position}) on a screen tap over the reticle
+// <a-scene hit-place="target: #farm">
+//   emits 'hitplace-surface'  the first time a surface is seen (preview shown)
+//   emits 'hitplace-select'   on a screen tap while previewing (lock it in)
 
 AFRAME.registerComponent('hit-place', {
-  schema: { reticle: { type: 'selector' } },
+  schema: { target: { type: 'selector' } },
 
   init() {
     this.hitSource = null;
-    this.viewerSpace = null;
     this.refSpace = null;
     this.hasSurface = false;
-    this.reticleVisible = false;
+    this.tracking = false;      // currently following a hit
+    this.paused = false;        // set true after placement
 
     this._pos = new THREE.Vector3();
-    this._quat = new THREE.Quaternion();
 
     this.el.addEventListener('enter-vr', () => this._onEnter());
     this.el.addEventListener('exit-vr',  () => this._onExit());
@@ -32,8 +32,8 @@ AFRAME.registerComponent('hit-place', {
     this.refSpace = this.el.renderer.xr.getReferenceSpace();
 
     try {
-      this.viewerSpace = await session.requestReferenceSpace('viewer');
-      this.hitSource = await session.requestHitTestSource({ space: this.viewerSpace });
+      const viewerSpace = await session.requestReferenceSpace('viewer');
+      this.hitSource = await session.requestHitTestSource({ space: viewerSpace });
       console.log('[hit-place] hit-test source ready');
     } catch (e) {
       console.warn('[hit-place] could not create hit-test source:', e.message);
@@ -41,7 +41,7 @@ AFRAME.registerComponent('hit-place', {
     }
 
     this._onSelect = () => {
-      if (this.hasSurface && this.reticleVisible) {
+      if (this.tracking && !this.paused) {
         this.el.emit('hitplace-select', { position: this._pos.clone() });
       }
     };
@@ -54,38 +54,30 @@ AFRAME.registerComponent('hit-place', {
     }
     this.hitSource = null;
     this.hasSurface = false;
-    this._setReticle(false);
-  },
-
-  _setReticle(v) {
-    this.reticleVisible = v;
-    if (this.data.reticle) this.data.reticle.setAttribute('visible', v);
+    this.tracking = false;
   },
 
   tick() {
-    if (!this.hitSource || this.paused) return;
-    // A-Frame stores the live XRFrame on the scene; fall back to three.js
+    if (!this.hitSource || this.paused || !this.data.target) return;
     const frame = this.el.frame ||
       (this.el.renderer.xr.getFrame && this.el.renderer.xr.getFrame());
     if (!frame || !this.refSpace) return;
 
     const results = frame.getHitTestResults(this.hitSource);
-    if (!results.length) { this._setReticle(false); return; }
+    if (!results.length) { this.tracking = false; return; }
 
     const pose = results[0].getPose(this.refSpace);
-    if (!pose) { this._setReticle(false); return; }
+    if (!pose) { this.tracking = false; return; }
 
     const p = pose.transform.position;
-    const o = pose.transform.orientation;
     this._pos.set(p.x, p.y, p.z);
-    this._quat.set(o.x, o.y, o.z, o.w);
 
-    const r = this.data.reticle;
-    if (r) {
-      r.object3D.position.copy(this._pos);
-      r.object3D.quaternion.copy(this._quat);
+    // move the preview, keep it upright (yaw only, left to the user afterwards)
+    this.data.target.object3D.position.copy(this._pos);
+    if (!this.data.target.getAttribute('visible')) {
+      this.data.target.setAttribute('visible', true);
     }
-    this._setReticle(true);
+    this.tracking = true;
 
     if (!this.hasSurface) {
       this.hasSurface = true;
