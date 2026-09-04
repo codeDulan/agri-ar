@@ -1,7 +1,7 @@
 // Markerless-AR page logic.
 //
-// Primary path: the `hit-place` component runs a WebXR hit-test, shows a
-// reticle on the detected surface, and emits `hitplace-surface` / `hitplace-select`.
+// Primary path: the `hit-place` component runs a WebXR hit-test, previews the
+// farm at the detected surface, and emits `hitplace-surface` / `hitplace-select`.
 // Fallback path: if no surface is found within a few seconds, the user can tap
 // anywhere to drop the farm ~1 m in front of them at an estimated floor height.
 
