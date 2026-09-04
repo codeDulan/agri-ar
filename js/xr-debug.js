@@ -10,12 +10,15 @@
 //   - errors
 
 (function () {
+  const debugMode = /[?&]debug=1/.test(location.search);
+  const btn = document.querySelector('#xr-debug-btn');
+
+  // The debug button is only shown when ?debug=1 is in the URL.
+  if (!debugMode) { if (btn) btn.hidden = true; return; }
+
   const panel = document.createElement('div');
   panel.id = 'xr-debug';
-  panel.hidden = !/[?&]debug=1/.test(location.search);
   document.querySelector('#ui').appendChild(panel);
-
-  const btn = document.querySelector('#xr-debug-btn');
   btn?.addEventListener('click', () => { panel.hidden = !panel.hidden; });
 
   let lines = [];
