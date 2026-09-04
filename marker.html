@@ -21,11 +21,7 @@
       <span id="status">starting camera…</span>
     </header>
 
-    <div id="scan-hint" class="hint">
-      Point the camera at the <strong>Hiro</strong> marker.
-      <a href="https://raw.githack.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" rel="noopener">Open
-        / print marker ›</a>
-    </div>
+    <div id="scan-hint" class="hint">Point the camera at the <strong>Hiro</strong> marker.</div>
 
     <div id="scenario-bar" class="controls">
       <button class="btn" data-scenario="sunny">☀️ Sunny</button>
@@ -34,11 +30,23 @@
     </div>
   </div>
 
+  <!-- Start gate: keeps the camera request tied to a direct user tap
+       (Android refuses permission prompts while overlay apps are active). -->
+  <div id="ar-start">
+    <div class="start-card">
+      <h2>🎯 Marker AR</h2>
+      <p>Tap start, then allow camera access and point the camera at the <strong>Hiro marker</strong>.</p>
+      <p class="muted">Don’t have it? <a href="https://raw.githack.com/AR-js-org/AR.js/master/data/images/hiro.png" target="_blank" rel="noopener">Open the Hiro marker ›</a></p>
+      <button id="ar-start-btn" class="btn btn--primary">Start camera</button>
+      <p class="muted small">If no permission prompt appears, close any floating chat bubbles or screen-filter apps, then reload.</p>
+    </div>
+  </div>
+
+  <!-- `arjs` is added by js/ar-start.js after the Start tap -->
   <a-scene embedded loading-screen="enabled: false"
     vr-mode-ui="enabled: false" xr-mode-ui="enabled: false"
     renderer="colorManagement: true; antialias: true; alpha: true"
-    gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
-    arjs="sourceType: webcam; detectionMode: mono; matrixCodeType: 3x3; debugUIEnabled: false; sourceWidth: 1280; sourceHeight: 960; displayWidth: 1280; displayHeight: 960;">
+    gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/">
 
     <a-assets timeout="15000">
       <a-asset-item id="turbine" src="assets/models/turbine.glb"></a-asset-item>
@@ -115,6 +123,7 @@
   </a-scene>
 
   <script src="js/gltf-fallback.js"></script>
+  <script src="js/ar-start.js"></script>
   <script src="js/spin-part.js"></script>
   <script src="js/billboard.js"></script>
   <script src="js/weather-fx.js"></script>
