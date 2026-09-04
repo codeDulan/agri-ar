@@ -1,10 +1,9 @@
 // Markerless-AR page logic.
 //
-// Primary path: A-Frame's `ar-hit-test` finds a surface, shows a reticle, and
-// on tap places #farm there.
-// Fallback path: if no surface is found within a few seconds (poor lighting /
-// texture, or a device where hit-test is flaky), the user can tap anywhere to
-// drop the farm ~1 m in front of them at an estimated floor height.
+// Primary path: the `hit-place` component runs a WebXR hit-test, shows a
+// reticle on the detected surface, and emits `hitplace-surface` / `hitplace-select`.
+// Fallback path: if no surface is found within a few seconds, the user can tap
+// anywhere to drop the farm ~1 m in front of them at an estimated floor height.
 
 const scene    = document.querySelector('a-scene');
 const farm     = document.querySelector('#farm');
@@ -21,9 +20,13 @@ let fallbackTimer = null;
 function setHint(txt) { hint.innerHTML = txt; hint.hidden = false; }
 
 // ---- place the farm (shared by both paths) ---------------------------
+function hitPlace() { return scene.components['hit-place']; }
+
 function finishPlacement() {
   placed = true;
   clearTimeout(fallbackTimer);
+  if (hitPlace()) hitPlace().paused = true;
+  document.querySelector('#reticle').setAttribute('visible', false);
   window.AgriAudio?.ping();
   window.setStatus('Farm placed ✓');
   setHint('Drag to rotate · pinch to resize');
@@ -75,29 +78,29 @@ scene.addEventListener('exit-vr', () => {
   controls.hidden = true;
 });
 
-// ---- hit-test path -----------------------------------------------
-scene.addEventListener('ar-hit-test-start', () => {
-  if (!placed) window.setStatus('Point at the floor…');
-});
-scene.addEventListener('ar-hit-test-achieved', () => {
+// ---- hit-test path (our hit-place component) --------------------------
+scene.addEventListener('hitplace-surface', () => {
   surfaceFound = true;
+  clearTimeout(fallbackTimer);
   if (!placed) {
     window.setStatus('Surface found — tap to place');
-    setHint('Tap the ring to place the farm.');
+    setHint('Tap the green ring to place the farm.');
   }
 });
-scene.addEventListener('ar-hit-test-select', () => {
-  if (!placed) finishPlacement();
+
+scene.addEventListener('hitplace-select', (e) => {
+  if (placed) return;
+  farm.object3D.position.copy(e.detail.position);
+  farm.object3D.rotation.set(0, 0, 0);
+  finishPlacement();
 });
 
 // ---- fallback tap ----------------------------------------------
-// The WebXR session emits `select` on every screen tap. If the hit-test
-// path hasn't placed anything and the fallback is armed, place manually.
 scene.addEventListener('enter-vr', () => {
   const session = scene.renderer && scene.renderer.xr && scene.renderer.xr.getSession();
   if (!session) return;
   session.addEventListener('select', () => {
-    if (!placed && fallbackArmed) placeInFront();
+    if (!placed && fallbackArmed && !surfaceFound) placeInFront();
   });
 });
 
@@ -118,7 +121,7 @@ resetBtn.addEventListener('click', () => {
   farm.setAttribute('gesture-transform', 'enabled', false);
   farm.object3D.rotation.set(0, 0, 0);
   farm.object3D.scale.set(0.16, 0.16, 0.16);
-  scene.setAttribute('ar-hit-test', 'enabled', true);
+  if (hitPlace()) { hitPlace().paused = false; hitPlace().hasSurface = false; }
   window.setStatus('Scanning for a surface…');
   setHint('Tap a surface to place the farm.');
   controls.hidden = true;

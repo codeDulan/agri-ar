@@ -39,7 +39,7 @@
     loading-screen="enabled: false"
     gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
     webxr="requiredFeatures: hit-test, local-floor; optionalFeatures: dom-overlay; overlayElement: #ui"
-    ar-hit-test="target: #farm; type: map; mapSize: 0.2 0.2"
+    hit-place="reticle: #reticle"
     xr-mode-ui="enabled: true; XRMode: ar">
 
     <a-assets timeout="15000">
@@ -57,6 +57,12 @@
     </a-entity>
     <a-entity id="crop-fallback" visible="false">
       <a-sphere radius="0.18" position="0 0.3 0" color="#3f9b45"></a-sphere>
+    </a-entity>
+
+    <!-- hit-test reticle -->
+    <a-entity id="reticle" visible="false">
+      <a-ring rotation="-90 0 0" radius-inner="0.06" radius-outer="0.085"
+        material="color: #7ede6c; shader: flat; opacity: 0.9; transparent: true; side: double"></a-ring>
     </a-entity>
 
     <!-- ===== the farm scene: hidden until the user taps a detected surface ===== -->
@@ -103,6 +109,7 @@
   <script src="js/spin-part.js"></script>
   <script src="js/billboard.js"></script>
   <script src="js/gesture-transform.js"></script>
+  <script src="js/hit-place.js"></script>
   <script src="js/weather-fx.js"></script>
   <script src="js/ar-shell.js"></script>
   <script src="js/audio.js"></script>
