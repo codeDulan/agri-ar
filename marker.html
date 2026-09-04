@@ -77,8 +77,23 @@
         <a-entity id="crop-marker" position="0.6 0.005 0" rotation="0 0 0"
           gltf-model="#crop" gltf-fallback="#crop-fallback" scale="0.05 0.05 0.05"></a-entity>
 
+        <!-- compass badge: N/E/S/W reference + wind-direction arrow -->
+        <a-entity position="0.05 0.02 0.82">
+          <a-circle rotation="-90 0 0" radius="0.3"
+            material="color: #0c1a12; opacity: 0.72; transparent: true; shader: flat"></a-circle>
+          <a-text value="N" rotation="-90 0 0" position="0 0.002 -0.24" align="center" width="1.5" color="#eafaf0"></a-text>
+          <a-text value="S" rotation="-90 0 0" position="0 0.002 0.24"  align="center" width="1.5" color="#9fb3a6"></a-text>
+          <a-text value="E" rotation="-90 0 0" position="0.24 0.002 0"  align="center" width="1.5" color="#9fb3a6"></a-text>
+          <a-text value="W" rotation="-90 0 0" position="-0.24 0.002 0" align="center" width="1.5" color="#9fb3a6"></a-text>
+          <a-entity id="wind-arrow-m" position="0 0.03 0">
+            <a-cylinder radius="0.013" height="0.3" rotation="90 0 0" material="color: #4db6e6; shader: flat"></a-cylinder>
+            <a-cone radius-bottom="0.045" radius-top="0" height="0.1" position="0 0 -0.2" rotation="-90 0 0"
+              material="color: #4db6e6; shader: flat"></a-cone>
+          </a-entity>
+        </a-entity>
+
         <!-- weather visuals + crop tint, driven by the scenario buttons -->
-        <a-entity weather-fx="turbine: #turbine-ent; crop: #crop-marker;
+        <a-entity weather-fx="turbine: #turbine-ent; windArrow: #wind-arrow-m; crop: #crop-marker;
           field: #field-top-m; fieldBase: #field-base-m;
           panel: #marker-readout; panelRoot: #marker-panel"></a-entity>
 

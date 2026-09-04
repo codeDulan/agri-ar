@@ -61,14 +61,20 @@ scene.addEventListener('enter-vr', () => {
   window.setStatus('Scanning for a surface…');
   setHint('Move your phone slowly across the floor.');
 
+  armFallback();
+});
+
+// ARCore usually needs 6–12 s to lock the first surface, so only offer the
+// tap-anywhere fallback after a longer wait, and word it as an option.
+function armFallback() {
   clearTimeout(fallbackTimer);
   fallbackTimer = setTimeout(() => {
     if (placed || surfaceFound) return;
     fallbackArmed = true;
-    window.setStatus('Tap the screen to place the farm');
-    setHint('No surface detected — <strong>tap anywhere</strong> to place it in front of you.');
-  }, 6000);
-});
+    window.setStatus('Still scanning…');
+    setHint('Still looking for a surface — keep moving the phone, or <strong>tap anywhere</strong> to place it in front of you.');
+  }, 12000);
+}
 
 scene.addEventListener('exit-vr', () => {
   clearTimeout(fallbackTimer);
@@ -80,6 +86,7 @@ scene.addEventListener('exit-vr', () => {
 // ---- hit-test path (our hit-place component) --------------------------
 scene.addEventListener('hitplace-surface', () => {
   surfaceFound = true;
+  fallbackArmed = false;               // real surface wins; retract the fallback
   clearTimeout(fallbackTimer);
   if (!placed) {
     window.setStatus('Aim, then tap to place');
@@ -120,19 +127,11 @@ resetBtn.addEventListener('click', () => {
   farm.setAttribute('gesture-transform', 'enabled', false);
   farm.object3D.rotation.set(0, 0, 0);
   farm.object3D.scale.set(0.16, 0.16, 0.16);
-  farm.setAttribute('visible', false);
   if (hitPlace()) { hitPlace().paused = false; hitPlace().hasSurface = false; hitPlace().tracking = false; }
   window.setStatus('Scanning for a surface…');
-  setHint('Tap a surface to place the farm.');
+  setHint('Move the phone to scan, then tap to place the farm.');
   controls.hidden = true;
-
-  clearTimeout(fallbackTimer);
-  fallbackTimer = setTimeout(() => {
-    if (placed || surfaceFound) return;
-    fallbackArmed = true;
-    window.setStatus('Tap the screen to place the farm');
-    setHint('No surface detected — <strong>tap anywhere</strong> to place it.');
-  }, 6000);
+  armFallback();
 });
 
 // ---- desktop / no-WebXR preview ------------------------------

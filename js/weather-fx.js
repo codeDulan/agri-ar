@@ -13,6 +13,7 @@
 AFRAME.registerComponent('weather-fx', {
   schema: {
     turbine:   { type: 'selector' },
+    windArrow: { type: 'selector' },   // arrow on the compass badge
     crop:      { type: 'selector' },
     field:     { type: 'selector' },   // top ground surface
     fieldBase: { type: 'selector' },   // thin rim below it
@@ -80,11 +81,12 @@ AFRAME.registerComponent('weather-fx', {
     // wind -> blade speed (cap so it stays believable)
     window.turbineRPM = Math.min(Math.max(d.windSpeed * 2.2, 1), 32);
 
-    // wind direction -> turbine yaw (face into the wind)
-    if (this.data.turbine) {
-      this.data.turbine.setAttribute('rotation',
-        { x: 0, y: (d.windDir + 180) % 360, z: 0 });
-    }
+    // wind direction -> turbine yaw and the compass wind arrow, kept in step.
+    // Bearing is degrees clockwise from field-north (the "N" on the compass badge);
+    // A-Frame Y-rotation is counter-clockwise, hence the negative sign.
+    const yaw = -(d.windDir + 180) % 360;
+    if (this.data.turbine)   this.data.turbine.setAttribute('rotation',   { x: 0, y: yaw, z: 0 });
+    if (this.data.windArrow) this.data.windArrow.setAttribute('rotation', { x: 0, y: yaw, z: 0 });
 
     this._apply(d.condition);
     this._tintCrop(d.condition);

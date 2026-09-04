@@ -75,8 +75,23 @@
         scale="0.55 0.55 0.55"
         spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
 
+      <!-- compass badge: N/E/S/W reference + wind-direction arrow -->
+      <a-entity position="0.3 0.02 1.05">
+        <a-circle rotation="-90 0 0" radius="0.32"
+          material="color: #0c1a12; opacity: 0.72; transparent: true; shader: flat"></a-circle>
+        <a-text value="N" rotation="-90 0 0" position="0 0.002 -0.25" align="center" width="1.6" color="#eafaf0"></a-text>
+        <a-text value="S" rotation="-90 0 0" position="0 0.002 0.25"  align="center" width="1.6" color="#9fb3a6"></a-text>
+        <a-text value="E" rotation="-90 0 0" position="0.25 0.002 0"  align="center" width="1.6" color="#9fb3a6"></a-text>
+        <a-text value="W" rotation="-90 0 0" position="-0.25 0.002 0" align="center" width="1.6" color="#9fb3a6"></a-text>
+        <a-entity id="wind-arrow-ml" position="0 0.03 0">
+          <a-cylinder radius="0.014" height="0.32" rotation="90 0 0" material="color: #4db6e6; shader: flat"></a-cylinder>
+          <a-cone radius-bottom="0.05" radius-top="0" height="0.11" position="0 0 -0.21" rotation="-90 0 0"
+            material="color: #4db6e6; shader: flat"></a-cone>
+        </a-entity>
+      </a-entity>
+
       <!-- live weather visuals -->
-      <a-entity weather-fx="turbine: #turbine-ent; crop: #crop-markerless;
+      <a-entity weather-fx="turbine: #turbine-ent; windArrow: #wind-arrow-ml; crop: #crop-markerless;
         field: #field-top-ml; fieldBase: #field-base-ml;
         panel: #ml-readout; panelRoot: #ml-panel"></a-entity>
 
