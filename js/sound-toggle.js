@@ -1,4 +1,3 @@
-// Wires the 🔊 button to AgriAudio. Shared by both AR pages.
 (function () {
   const btn = document.querySelector('#sound');
   if (!btn) return;

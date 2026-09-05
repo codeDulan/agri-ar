@@ -1,13 +1,3 @@
-// A-Frame component: hit-place
-// Runs a WebXR hit-test and shows the target entity itself as a live preview at
-// the detected surface — the preview follows the user's aim, and a screen tap
-// over it locks the placement. Replaces A-Frame 1.6's `ar-hit-test` (which did
-// not surface anything on the test device despite the hit-test API working).
-//
-// <a-scene hit-place="target: #farm">
-//   emits 'hitplace-surface'  the first time a surface is seen (preview shown)
-//   emits 'hitplace-select'   on a screen tap while previewing (lock it in)
-
 AFRAME.registerComponent('hit-place', {
   schema: { target: { type: 'selector' } },
 
@@ -21,7 +11,7 @@ AFRAME.registerComponent('hit-place', {
     this._pos = new THREE.Vector3();
 
     this.el.addEventListener('enter-vr', () => this._onEnter());
-    this.el.addEventListener('exit-vr',  () => this._onExit());
+    this.el.addEventListener('exit-vr', () => this._onExit());
   },
 
   async _onEnter() {

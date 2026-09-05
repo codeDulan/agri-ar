@@ -1,14 +1,3 @@
-// WebXR diagnostic panel for the markerless page.
-// Toggle with the 🐞 button, or open the page with ?debug=1 to start expanded.
-//
-// It logs, in order:
-//   - navigator.xr presence + immersive-ar support
-//   - session start, and which features were actually GRANTED (session.enabledFeatures)
-//   - whether an independent viewer-space hit-test source can be created
-//   - live count of hit-test results per second (is ARCore finding surfaces at all?)
-//   - every A-Frame ar-hit-test event
-//   - errors
-
 (function () {
   const debugMode = /[?&]debug=1/.test(location.search);
   const btn = document.querySelector('#xr-debug-btn');
@@ -60,7 +49,7 @@
     log('granted features: ' +
       (session.enabledFeatures ? session.enabledFeatures.join(', ') : '(not reported)'));
     log('blend mode: ' + session.environmentBlendMode +
-        ' · interaction: ' + session.interactionMode);
+      ' · interaction: ' + session.interactionMode);
 
     session.addEventListener('end', () => log('XR session ended'));
 
@@ -90,7 +79,7 @@
       const now = performance.now();
       if (now - lastReport > 2000) {
         log(`2s: ${frameCount} frames, hit-test hit on ${hitFrames} of them` +
-            (hitSource ? '' : ' (no source yet)'));
+          (hitSource ? '' : ' (no source yet)'));
         frameCount = 0; hitFrames = 0; lastReport = now;
       }
     }

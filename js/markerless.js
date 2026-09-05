@@ -1,13 +1,6 @@
-// Markerless-AR page logic.
-//
-// Primary path: the `hit-place` component runs a WebXR hit-test, previews the
-// farm at the detected surface, and emits `hitplace-surface` / `hitplace-select`.
-// Fallback path: if no surface is found within a few seconds, the user can tap
-// anywhere to drop the farm ~1 m in front of them at an estimated floor height.
-
-const scene    = document.querySelector('a-scene');
-const farm     = document.querySelector('#farm');
-const hint     = document.querySelector('#hint');
+const scene = document.querySelector('a-scene');
+const farm = document.querySelector('#farm');
+const hint = document.querySelector('#hint');
 const controls = document.querySelector('#controls');
 const resetBtn = document.querySelector('#reset');
 const cameraEl = document.querySelector('a-camera');

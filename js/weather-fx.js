@@ -1,23 +1,11 @@
-// A-Frame component: weather-fx
-// Turns live weather (from the `weather-updated` document event) into scene
-// changes:
-//   - wind speed   -> turbine blade RPM (window.turbineRPM, read by spin-part)
-//   - wind direction -> turbine yaw + a wind-arrow indicator
-//   - condition    -> a sun (clear) OR clouds + falling rain (rain) in the sky
-//   - updates a text panel (selector in `panel`)
-//
-// Place one on an entity that sits ABOVE the field, e.g.
-//   <a-entity weather-fx="turbine: #turbine-ent; panel: #marker-readout;
-//             panelRoot: #marker-panel"></a-entity>
-
 AFRAME.registerComponent('weather-fx', {
   schema: {
-    turbine:   { type: 'selector' },
+    turbine: { type: 'selector' },
     windArrow: { type: 'selector' },   // arrow on the compass badge
-    crop:      { type: 'selector' },
-    field:     { type: 'selector' },   // top ground surface
+    crop: { type: 'selector' },
+    field: { type: 'selector' },   // top ground surface
     fieldBase: { type: 'selector' },   // thin rim below it
-    panel:     { type: 'selector' },
+    panel: { type: 'selector' },
     panelRoot: { type: 'selector' },
     rainCount: { type: 'int', default: 140 }
   },
@@ -26,9 +14,9 @@ AFRAME.registerComponent('weather-fx', {
     this.condition = 'clear';
 
     // --- sky containers -------------------------------------------------
-    this.sun    = this._makeSun();
+    this.sun = this._makeSun();
     this.clouds = this._makeClouds();
-    this.rain   = this._makeRain(this.data.rainCount);
+    this.rain = this._makeRain(this.data.rainCount);
     this.el.setObject3D('sun', this.sun);
     this.el.setObject3D('clouds', this.clouds);
     this.el.setObject3D('rain', this.rain.mesh);
@@ -85,7 +73,7 @@ AFRAME.registerComponent('weather-fx', {
     // Bearing is degrees clockwise from field-north (the "N" on the compass badge);
     // A-Frame Y-rotation is counter-clockwise, hence the negative sign.
     const yaw = -(d.windDir + 180) % 360;
-    if (this.data.turbine)   this.data.turbine.setAttribute('rotation',   { x: 0, y: yaw, z: 0 });
+    if (this.data.turbine) this.data.turbine.setAttribute('rotation', { x: 0, y: yaw, z: 0 });
     if (this.data.windArrow) this.data.windArrow.setAttribute('rotation', { x: 0, y: yaw, z: 0 });
 
     this._apply(d.condition);
@@ -97,11 +85,11 @@ AFRAME.registerComponent('weather-fx', {
   // ground colour per condition: dry sun, lush rain, natural otherwise
   _tintField(condition) {
     const cfg = {
-      clear:  { top: '#c2ad6b', base: '#7f6f38' },
-      rain:   { top: '#3f9a45', base: '#276b2c' },
+      clear: { top: '#c2ad6b', base: '#7f6f38' },
+      rain: { top: '#3f9a45', base: '#276b2c' },
       cloudy: { top: '#5cae4e', base: '#2f5d29' }
     }[condition] || { top: '#5cae4e', base: '#2f5d29' };
-    if (this.data.field)     this.data.field.setAttribute('material', 'color', cfg.top);
+    if (this.data.field) this.data.field.setAttribute('material', 'color', cfg.top);
     if (this.data.fieldBase) this.data.fieldBase.setAttribute('material', 'color', cfg.base);
   },
 
@@ -110,8 +98,8 @@ AFRAME.registerComponent('weather-fx', {
     this._lastCondition = condition;
     if (!this._cropMats.length) return;
     const cfg = {
-      clear:  { hex: 0xc9a24e, s: 0.6 },
-      rain:   { hex: 0x2aa33a, s: 0.55 },
+      clear: { hex: 0xc9a24e, s: 0.6 },
+      rain: { hex: 0x2aa33a, s: 0.55 },
       cloudy: { hex: 0x000000, s: 0 }
     }[condition] || { hex: 0x000000, s: 0 };
     const target = new THREE.Color(cfg.hex);
@@ -126,7 +114,7 @@ AFRAME.registerComponent('weather-fx', {
     this.condition = condition;
     const rain = condition === 'rain';
     const clear = condition === 'clear';
-    this.sun.visible    = clear;
+    this.sun.visible = clear;
     this.clouds.visible = !clear;
     this.rain.mesh.visible = rain;
   },
@@ -162,8 +150,8 @@ AFRAME.registerComponent('weather-fx', {
     const g = new THREE.Group();
     g.position.set(0.1, 1.9, -0.5);
     const mat = new THREE.MeshLambertMaterial({ color: 0xdfe4e8 });
-    const puffs = [[0,0,0,0.28],[0.28,0.03,0.05,0.22],[-0.28,0.01,-0.03,0.23],[0.08,-0.03,0.2,0.19]];
-    puffs.forEach(([x,y,z,r]) => {
+    const puffs = [[0, 0, 0, 0.28], [0.28, 0.03, 0.05, 0.22], [-0.28, 0.01, -0.03, 0.23], [0.08, -0.03, 0.2, 0.19]];
+    puffs.forEach(([x, y, z, r]) => {
       const m = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 14), mat);
       m.position.set(x, y, z);
       m.scale.y = 0.6;

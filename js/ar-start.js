@@ -1,12 +1,7 @@
-// Marker page: start AR.js only after an explicit tap, so the camera
-// permission prompt is a direct response to a user gesture (Android blocks
-// prompts triggered while another app is drawing an overlay, and an
-// automatic on-load request is the worst case for that).
-
 (function () {
-  const scene   = document.querySelector('a-scene');
+  const scene = document.querySelector('a-scene');
   const overlay = document.querySelector('#ar-start');
-  const btn     = document.querySelector('#ar-start-btn');
+  const btn = document.querySelector('#ar-start-btn');
 
   const ARJS =
     'sourceType: webcam; detectionMode: mono; matrixCodeType: 3x3; ' +

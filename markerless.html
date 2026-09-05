@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -9,9 +10,9 @@
 
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-  <!-- This #ui element is handed to WebXR as the dom-overlay, so it stays
-       visible on top of the camera feed during the AR session. -->
+
   <div id="ui">
     <header id="topbar">
       <button id="back" class="btn btn--ghost">‹ Menu</button>
@@ -34,13 +35,10 @@
     </div>
   </div>
 
-  <a-scene
-    renderer="colorManagement: true; antialias: true"
-    loading-screen="enabled: false"
+  <a-scene renderer="colorManagement: true; antialias: true" loading-screen="enabled: false"
     gltf-model="dracoDecoderPath: https://www.gstatic.com/draco/versioned/decoders/1.5.7/"
     webxr="requiredFeatures: hit-test, local-floor; optionalFeatures: dom-overlay; overlayElement: #ui"
-    hit-place="target: #farm"
-    xr-mode-ui="enabled: true; XRMode: ar">
+    hit-place="target: #farm" xr-mode-ui="enabled: true; XRMode: ar">
 
     <a-assets timeout="15000">
       <a-asset-item id="turbine" src="assets/models/turbine.glb"></a-asset-item>
@@ -60,8 +58,7 @@
     </a-entity>
 
     <!-- ===== the farm scene: previews at the detected surface, locks on tap ===== -->
-    <a-entity id="farm" visible="false" scale="0.16 0.16 0.16"
-      gesture-transform="min: 0.05; max: 0.45">
+    <a-entity id="farm" visible="false" scale="0.16 0.16 0.16" gesture-transform="min: 0.05; max: 0.45">
 
       <!-- shared ground field: solid, sunk just below the models -->
       <a-box id="field-top-ml" position="0.3 -0.03 0" depth="1.8" width="2.6" height="0.06"
@@ -70,21 +67,24 @@
         material="color: #2f5d29; roughness: 1"></a-box>
 
       <!-- Model A: wind turbine — blades + yaw driven by live wind -->
-      <a-entity id="turbine-ent" position="-0.55 0 0"
-        gltf-model="#turbine" gltf-fallback="#turbine-fallback"
-        scale="0.55 0.55 0.55"
-        spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
+      <a-entity id="turbine-ent" position="-0.55 0 0" gltf-model="#turbine" gltf-fallback="#turbine-fallback"
+        scale="0.55 0.55 0.55" spin-part="part: windturbine_tall_fan; axis: z; speed: 120"></a-entity>
 
       <!-- compass badge: N/E/S/W reference + wind-direction arrow -->
       <a-entity position="0.3 0.02 1.05">
         <a-circle rotation="-90 0 0" radius="0.32"
           material="color: #0c1a12; opacity: 0.72; transparent: true; shader: flat"></a-circle>
-        <a-text value="N" rotation="-90 0 0" position="0 0.002 -0.25" align="center" width="1.6" color="#eafaf0"></a-text>
-        <a-text value="S" rotation="-90 0 0" position="0 0.002 0.25"  align="center" width="1.6" color="#9fb3a6"></a-text>
-        <a-text value="E" rotation="-90 0 0" position="0.25 0.002 0"  align="center" width="1.6" color="#9fb3a6"></a-text>
-        <a-text value="W" rotation="-90 0 0" position="-0.25 0.002 0" align="center" width="1.6" color="#9fb3a6"></a-text>
+        <a-text value="N" rotation="-90 0 0" position="0 0.002 -0.25" align="center" width="1.6"
+          color="#eafaf0"></a-text>
+        <a-text value="S" rotation="-90 0 0" position="0 0.002 0.25" align="center" width="1.6"
+          color="#9fb3a6"></a-text>
+        <a-text value="E" rotation="-90 0 0" position="0.25 0.002 0" align="center" width="1.6"
+          color="#9fb3a6"></a-text>
+        <a-text value="W" rotation="-90 0 0" position="-0.25 0.002 0" align="center" width="1.6"
+          color="#9fb3a6"></a-text>
         <a-entity id="wind-arrow-ml" position="0 0.03 0">
-          <a-cylinder radius="0.014" height="0.32" rotation="90 0 0" material="color: #4db6e6; shader: flat"></a-cylinder>
+          <a-cylinder radius="0.014" height="0.32" rotation="90 0 0"
+            material="color: #4db6e6; shader: flat"></a-cylinder>
           <a-cone radius-bottom="0.05" radius-top="0" height="0.11" position="0 0 -0.21" rotation="-90 0 0"
             material="color: #4db6e6; shader: flat"></a-cone>
         </a-entity>
@@ -96,8 +96,7 @@
         panel: #ml-readout; panelRoot: #ml-panel"></a-entity>
 
       <!-- Model B: crop plot — colour driven by live air quality (Step 6) -->
-      <a-entity id="crop-markerless" position="0.9 0.005 0"
-        gltf-model="#crop" gltf-fallback="#crop-fallback"
+      <a-entity id="crop-markerless" position="0.9 0.005 0" gltf-model="#crop" gltf-fallback="#crop-fallback"
         scale="0.06 0.06 0.06"></a-entity>
 
       <a-sphere position="-0.55 1.1 0" radius="0.04" color="#7CFC00"
@@ -105,7 +104,8 @@
 
       <!-- live-data panel (hidden until Step 6) -->
       <a-entity id="ml-panel" visible="false" position="0.1 1.9 0" billboard>
-        <a-plane width="1.3" height="0.55" material="color: #0c1a12; opacity: 0.82; transparent: true; side: double"></a-plane>
+        <a-plane width="1.3" height="0.55"
+          material="color: #0c1a12; opacity: 0.82; transparent: true; side: double"></a-plane>
         <a-entity id="ml-readout" position="0 0 0.01"
           text="value: ; align: center; width: 1.7; color: #eafaf0; wrapCount: 26"></a-entity>
       </a-entity>
@@ -128,4 +128,5 @@
   <script src="js/xr-debug.js"></script>
   <script src="js/markerless.js"></script>
 </body>
+
 </html>

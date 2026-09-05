@@ -1,8 +1,3 @@
-// Live weather via the Open-Meteo REST APIs (no key, CORS-enabled).
-//   - Geocoding API : city name  -> latitude / longitude
-//   - Forecast API  : lat / lon   -> current conditions
-// Broadcasts results as a `weather-updated` event on document.
-
 (function () {
   const FALLBACK = { lat: 7.2906, lon: 80.6337, name: 'Kandy, Sri Lanka' };
   const REFRESH_MS = 5 * 60 * 1000;
@@ -13,13 +8,13 @@
   // WMO weather-code -> our three visual states
   function classify(code) {
     if (code == null) return 'clear';
-    if ([51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99].includes(code)) return 'rain';
-    if ([2,3,45,48].includes(code)) return 'cloudy';
+    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99].includes(code)) return 'rain';
+    if ([2, 3, 45, 48].includes(code)) return 'cloudy';
     return 'clear';
   }
 
   function compass(deg) {
-    return ['N','NE','E','SE','S','SW','W','NW'][Math.round(deg / 45) % 8];
+    return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(deg / 45) % 8];
   }
 
   // --- geocoding: city name -> coords ---------------------------------
@@ -44,7 +39,7 @@
       if (!navigator.geolocation) return resolve(FALLBACK);
       navigator.geolocation.getCurrentPosition(
         (p) => resolve({ lat: p.coords.latitude, lon: p.coords.longitude, name: 'Your location' }),
-        ()  => resolve(FALLBACK),
+        () => resolve(FALLBACK),
         { timeout: 6000, maximumAge: 600000 }
       );
     });
@@ -111,7 +106,7 @@
   async function start() {
     const q = new URLSearchParams(location.search);
     coords = q.has('city') ? await geocode(q.get('city')).catch(() => FALLBACK)
-                           : await geolocate();
+      : await geolocate();
     document.dispatchEvent(new CustomEvent('weather-location', { detail: coords.name }));
     await run();
     schedule();

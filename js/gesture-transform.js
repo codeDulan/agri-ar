@@ -1,17 +1,9 @@
-// A-Frame component: gesture-transform
-// After the farm is placed (markerless mode), let the user
-//   - one finger drag left/right  -> rotate around Y
-//   - two finger pinch            -> scale (clamped)
-// Also supports mouse drag for desktop preview.
-//
-// Enable/disable via  el.setAttribute('gesture-transform', 'enabled', true|false)
-
 AFRAME.registerComponent('gesture-transform', {
   schema: {
     enabled: { default: false },
-    min:     { default: 0.04 },
-    max:     { default: 0.5 },
-    rotSpeed:{ default: 0.4 }        // degrees per pixel
+    min: { default: 0.04 },
+    max: { default: 0.5 },
+    rotSpeed: { default: 0.4 }        // degrees per pixel
   },
 
   init() {
@@ -31,20 +23,20 @@ AFRAME.registerComponent('gesture-transform', {
     this._mu = this.onMouseUp.bind(this);
 
     window.addEventListener('touchstart', this._ts, { passive: false });
-    window.addEventListener('touchmove',  this._tm, { passive: false });
-    window.addEventListener('touchend',   this._te);
-    window.addEventListener('mousedown',  this._md);
-    window.addEventListener('mousemove',  this._mm);
-    window.addEventListener('mouseup',    this._mu);
+    window.addEventListener('touchmove', this._tm, { passive: false });
+    window.addEventListener('touchend', this._te);
+    window.addEventListener('mousedown', this._md);
+    window.addEventListener('mousemove', this._mm);
+    window.addEventListener('mouseup', this._mu);
   },
 
   remove() {
     window.removeEventListener('touchstart', this._ts);
-    window.removeEventListener('touchmove',  this._tm);
-    window.removeEventListener('touchend',   this._te);
-    window.removeEventListener('mousedown',  this._md);
-    window.removeEventListener('mousemove',  this._mm);
-    window.removeEventListener('mouseup',    this._mu);
+    window.removeEventListener('touchmove', this._tm);
+    window.removeEventListener('touchend', this._te);
+    window.removeEventListener('mousedown', this._md);
+    window.removeEventListener('mousemove', this._mm);
+    window.removeEventListener('mouseup', this._mu);
   },
 
   _dist(t) {

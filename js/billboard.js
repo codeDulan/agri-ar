@@ -1,7 +1,3 @@
-// A-Frame component: billboard
-// Rotates the entity to face the active camera each frame (so text panels
-// stay readable from any angle). yAxisOnly keeps it upright.
-
 AFRAME.registerComponent('billboard', {
   schema: { yAxisOnly: { default: true } },
 

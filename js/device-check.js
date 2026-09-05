@@ -1,6 +1,5 @@
 // Landing-page capability probe.
 // Tells the user up front what their device/browser supports, so failures
-// in the AR modes are understood rather than mysterious.
 
 (async function deviceCheck() {
   const el = document.querySelector('#device-check');
@@ -18,7 +17,7 @@
   // 3. WebXR immersive-AR support (markerless).
   let xrAR = false;
   if (navigator.xr && navigator.xr.isSessionSupported) {
-    try { xrAR = await navigator.xr.isSessionSupported('immersive-ar'); } catch (_) {}
+    try { xrAR = await navigator.xr.isSessionSupported('immersive-ar'); } catch (_) { }
   }
   if (!xrAR) {
     notes.push('ℹ️ WebXR immersive-AR not supported here — use Marker AR, or open Markerless on an Android/Chrome phone.');

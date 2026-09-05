@@ -1,11 +1,3 @@
-// Procedural audio (Web Audio API) — no asset files needed.
-//   - wind : looped low-passed noise, volume tracks live wind speed
-//   - rain : looped band-passed noise, on only when the condition is 'rain'
-//   - ping : a short confirmation chime (marker found / farm placed)
-//
-// Browsers block audio until a user gesture, so nothing starts until
-// AgriAudio.enable() is called from a click (the 🔊 button).
-
 (function () {
   let ctx = null;
   let master = null;
